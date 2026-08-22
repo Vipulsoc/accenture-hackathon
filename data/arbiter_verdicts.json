@@ -1,0 +1,55 @@
+{
+  "episode_verdicts": [
+    {
+      "region": "APAC",
+      "weeks": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "cumulative_delta_revenue_usd": -289003.2,
+      "price_effect_pct": -14.4,
+      "volume_effect_pct": 111.4,
+      "dominant_driver": "volume/competitive pressure",
+      "episode_confidence_score": 0.717,
+      "confidence_tier": "HIGH",
+      "deal_corroboration": {
+        "lost_deals": 10,
+        "total_deals": 12,
+        "competitor_cited": 5,
+        "price_cited": 8
+      },
+      "verdict_text": "APAC: revenue down $289,003 cumulative across weeks 9-12. Attribution -- Price effect: -14% of movement | Volume/competitive effect: +111% of movement (dominant driver: volume/competitive pressure). Confidence: HIGH (episode score 0.72, based on LEARNED weights from analyst feedback). Deal-level check: 10/12 lost deals in APAC, 5 cite the competitor, 8 cite price (5 cite both). RECOMMENDATION: review win/loss reasons on the 5 competitor-cited lost deals to quantify displaced revenue precisely."
+    },
+    {
+      "region": "APAC-South",
+      "weeks": [
+        10,
+        12
+      ],
+      "cumulative_delta_revenue_usd": -13320.32,
+      "price_effect_pct": 2.6,
+      "volume_effect_pct": 98.4,
+      "dominant_driver": "volume/competitive pressure",
+      "episode_confidence_score": 0.604,
+      "confidence_tier": "MEDIUM",
+      "deal_corroboration": null,
+      "verdict_text": "APAC-South: revenue down $13,320 cumulative across weeks 10-12. Attribution -- Price effect: +3% of movement | Volume/competitive effect: +98% of movement (dominant driver: volume/competitive pressure). Confidence: MEDIUM (episode score 0.60, based on LEARNED weights from analyst feedback). RECOMMENDATION: confidence not yet high enough for a firm attribution -- continue monitoring next 2-4 weeks before final action."
+    }
+  ],
+  "complaint_flag_verdicts": [
+    {
+      "region": "APAC",
+      "week": 9,
+      "verdict": "CONFIRMED",
+      "text": "APAC week 9: complaint_volume alert CONFIRMED by Field investigation (folded into the revenue episode verdict above)."
+    },
+    {
+      "region": "NA",
+      "week": 11,
+      "verdict": "REJECTED",
+      "text": "NA week 11: complaint_volume alert was investigated and REJECTED as a false positive -- complaint_volume flag triggered on keyword match alone, but Field's actual reading of the ticket text came back LOW confidence -- this appears to be a FALSE POSITIVE of the keyword-based detector (e.g. positive/neutral mentions of 'pricing' or 'discount' misclassified as complaints). Do not treat as a validated signal."
+    }
+  ]
+}

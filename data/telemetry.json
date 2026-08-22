@@ -1,0 +1,12 @@
+{
+  "summary": {
+    "total_calls": 2,
+    "successful_calls": 2,
+    "failed_or_rejected_calls": 0,
+    "total_latency_ms": 12566,
+    "avg_latency_ms": 6283,
+    "total_tokens": 1523,
+    "total_estimated_cost_usd": 0.0,
+    "note": "Free-tier model (nvidia/nemotron-3-ultra-550b-a55b:free) - genuinely $0 cost. See APPROX_PRICING_PER_1M_TOKENS in field.py for how a paid-model comparison would be computed."
+  }
+}

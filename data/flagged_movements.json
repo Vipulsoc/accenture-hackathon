@@ -1,0 +1,130 @@
+[
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC",
+    "week": 9,
+    "value": 405768.76,
+    "trailing_avg": 488964.03,
+    "pct_change": -17.01,
+    "threshold_pct": 8.0,
+    "reason": "-17.0% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC",
+    "week": 10,
+    "value": 369430.52,
+    "trailing_avg": 469271.16,
+    "pct_change": -21.28,
+    "threshold_pct": 8.0,
+    "reason": "-21.3% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC",
+    "week": 11,
+    "value": 372274.55,
+    "trailing_avg": 440780.63,
+    "pct_change": -15.54,
+    "threshold_pct": 8.0,
+    "reason": "-15.5% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC",
+    "week": 12,
+    "value": 376592.65,
+    "trailing_avg": 411966.8,
+    "pct_change": -8.59,
+    "threshold_pct": 8.0,
+    "reason": "-8.6% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC-South",
+    "week": 10,
+    "value": 36412.4,
+    "trailing_avg": 46211.61,
+    "pct_change": -21.21,
+    "threshold_pct": 8.0,
+    "reason": "-21.2% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "regional_revenue",
+    "region": "APAC-South",
+    "week": 12,
+    "value": 38168.51,
+    "trailing_avg": 41725.93,
+    "pct_change": -8.53,
+    "threshold_pct": 8.0,
+    "reason": "-8.5% vs 4-week trailing avg (threshold: \u00b18.0%)"
+  },
+  {
+    "kpi_id": "avg_selling_price",
+    "region": "APAC",
+    "week": 8,
+    "value": 254.4,
+    "prior_week_value": 240.0,
+    "pct_change": 6.0,
+    "threshold_pct": 4.0,
+    "reason": "+6.0% vs prior week (threshold: \u00b14.0%)"
+  },
+  {
+    "kpi_id": "win_rate",
+    "region": "APAC",
+    "week": 9,
+    "win_rate": 0.0,
+    "deals_won": 0,
+    "deals_total": 4,
+    "floor": 0.5,
+    "reason": "win rate 0% on 4 deals (floor: 50%)"
+  },
+  {
+    "kpi_id": "win_rate",
+    "region": "APAC",
+    "week": 10,
+    "win_rate": 0.25,
+    "deals_won": 2,
+    "deals_total": 8,
+    "floor": 0.5,
+    "reason": "win rate 25% on 8 deals (floor: 50%)"
+  },
+  {
+    "kpi_id": "complaint_volume",
+    "region": "APAC",
+    "week": 9,
+    "matched_ticket_count": 6,
+    "total_ticket_count": 6,
+    "baseline": 0,
+    "baseline_multiple": 3.0,
+    "sample_texts": [
+      "Pricing has gone up noticeably this quarter, we're comparing with alternatives now.",
+      "Your competitor NimbusCo quoted us 15% lower for a similar package."
+    ],
+    "reason": "6 price/competitor-tagged tickets vs baseline 0.0 (threshold: 3.0x)"
+  },
+  {
+    "kpi_id": "complaint_volume",
+    "region": "NA",
+    "week": 11,
+    "matched_ticket_count": 2,
+    "total_ticket_count": 3,
+    "baseline": 0,
+    "baseline_multiple": 3.0,
+    "sample_texts": [
+      "Loved the new promo pricing, easy signup process.",
+      "Quick question about the seasonal discount code eligibility."
+    ],
+    "reason": "2 price/competitor-tagged tickets vs baseline 0.0 (threshold: 3.0x)"
+  },
+  {
+    "kpi_id": "marketing_spend",
+    "region": "NA",
+    "week": 11,
+    "value": 42002.46,
+    "prior_week_value": 29290.17,
+    "pct_change": 43.4,
+    "threshold_pct": 15.0,
+    "reason": "+43.4% vs prior week (threshold: \u00b115.0%)"
+  }
+]

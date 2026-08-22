@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>How Quorum Works</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="" />
+  <style>
+    body { font-family: 'Georgia', 'Times New Roman', serif; line-height: 1.6; color: #1a1a1a; max-width: 780px; margin: 0 auto; padding: 20px 10px; font-size: 15px; }
+    h1 { font-size: 26px; border-bottom: 3px solid #4a2b7a; padding-bottom: 10px; margin-top: 0; color: #2d1a4d; }
+    h2 { font-size: 19px; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-top: 34px; color: #4a2b7a; }
+    h3 { font-size: 15.5px; margin-top: 22px; color: #2d1a4d; }
+    code { font-family: 'Consolas', 'Menlo', monospace; background: #f2f0f7; padding: 1px 5px; border-radius: 3px; font-size: 0.88em; color: #4a2b7a; }
+    pre { background: #f7f6fb; border: 1px solid #ddd6ec; border-radius: 5px; padding: 12px 14px; overflow-x: auto; }
+    pre code { background: none; padding: 0; color: #2d1a4d; }
+    table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 0.92em; }
+    th, td { border: 1px solid #ccc; padding: 7px 10px; text-align: left; }
+    th { background: #ede8f7; }
+    blockquote { border-left: 4px solid #7a5aa8; margin: 14px 0; padding: 8px 16px; background: #f7f6fb; color: #333; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 30px 0; }
+    #TOC { background: #f7f6fb; border: 1px solid #ddd6ec; border-radius: 6px; padding: 16px 24px; margin-bottom: 30px; }
+    #TOC ul { list-style-type: none; padding-left: 18px; }
+    #TOC > ul { padding-left: 0; }
+    a { color: #5a3a8a; }
+    strong { color: #2d1a4d; }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">How Quorum Works</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#how-quorum-works-prototype-explanation"
+id="toc-how-quorum-works-prototype-explanation">How Quorum Works —
+Prototype Explanation</a>
+<ul>
+<li><a href="#the-problem-were-solving"
+id="toc-the-problem-were-solving">1. The problem we’re solving</a></li>
+<li><a href="#the-data-what-were-investigating"
+id="toc-the-data-what-were-investigating">2. The data (what we’re
+investigating)</a></li>
+<li><a href="#the-kpi-semantic-layer-kpi_contracts.json"
+id="toc-the-kpi-semantic-layer-kpi_contracts.json">3. The KPI semantic
+layer — <code>kpi_contracts.json</code></a></li>
+<li><a href="#the-pipeline-stage-by-stage"
+id="toc-the-pipeline-stage-by-stage">4. The pipeline, stage by
+stage</a></li>
+<li><a href="#why-this-design-in-one-paragraph"
+id="toc-why-this-design-in-one-paragraph">5. Why this design, in one
+paragraph</a></li>
+<li><a href="#whats-not-built-yet-be-upfront-about-this-if-asked"
+id="toc-whats-not-built-yet-be-upfront-about-this-if-asked">6. What’s
+not built yet (be upfront about this if asked)</a></li>
+<li><a href="#how-to-run-the-whole-thing-end-to-end"
+id="toc-how-to-run-the-whole-thing-end-to-end">7. How to run the whole
+thing end-to-end</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="how-quorum-works-prototype-explanation">How Quorum Works —
+Prototype Explanation</h1>
+<p>This document explains, in plain terms, what every piece of the
+Quorum prototype does and why it exists. Read this before your pitch so
+you can explain any part of it on the spot if a judge asks.</p>
+<hr />
+<h2 id="the-problem-were-solving">1. The problem we’re solving</h2>
+<p>A dashboard can tell you revenue dropped 8% in a region. It can’t
+tell you <strong>why</strong>, and the “why” usually lives in four
+places that never talk to each other: the sales system, ops/change logs,
+customer support tickets, and the regional rep’s head. An analyst spends
+days manually stitching these together — or worse, someone asks a single
+AI to “explain the drop,” and it confidently blends four fragments of
+evidence into one smooth, sometimes wrong, story.</p>
+<p><strong>Quorum’s idea:</strong> instead of one AI guessing, run four
+independent “specialist” investigators who can’t see each other’s work,
+then have a Falsifier try to poke holes in what they found, then have an
+Arbiter weigh everything and give a final, honest verdict — including
+saying “we don’t know yet” when that’s the truth.</p>
+<hr />
+<h2 id="the-data-what-were-investigating">2. The data (what we’re
+investigating)</h2>
+<p>We built a synthetic scenario for BizzGrow Inc. — three regions
+(APAC, EMEA, NA) plus a newly-launched APAC-South — over 12 weeks, with
+five data sources of different types and refresh speeds:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>What it is</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sales DB</td>
+<td>weekly revenue, price, units per region</td>
+<td><code>sales_weekly.csv</code></td>
+</tr>
+<tr class="even">
+<td>Ops/change log</td>
+<td>logged internal events (price changes, competitor intel, promos,
+launches)</td>
+<td><code>ops_events.csv</code></td>
+</tr>
+<tr class="odd">
+<td>Support/CRM tickets</td>
+<td>unstructured customer text</td>
+<td><code>customer_tickets.csv</code></td>
+</tr>
+<tr class="even">
+<td>CRM deals</td>
+<td>won/lost deals with reasons</td>
+<td><code>deals.csv</code></td>
+</tr>
+<tr class="odd">
+<td>Marketing platform</td>
+<td>weekly ad spend</td>
+<td><code>marketing_spend.csv</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The story baked into the data:</strong> APAC revenue drops
+~17-21% starting week 9. Two real causes overlap: a 6% price increase
+(week 8) AND a competitor (“NimbusCo”) undercutting on deals (week 9
+onward). Untangling which cause explains how much of the drop is the
+whole point of the system.</p>
+<p><strong>We also deliberately built in three traps</strong> to prove
+the system doesn’t just pattern-match: - <strong>EMEA</strong> has a
+ticket spike, but it’s about a resolved billing outage, not price — the
+system must NOT fold this into the pricing story. - <strong>NA</strong>
+has 2 tickets that trip a keyword filter (mentioning “pricing” and
+“discount”) but are actually happy customers, not complaints. -
+<strong>APAC-South</strong> is brand new (1-4 weeks of history) — the
+system must admit it doesn’t have enough data for a confident historical
+comparison, not fake one.</p>
+<p>We also wired in a <strong>second, real-world dataset</strong>: the
+public Kaggle “Superstore” dataset, aggregated into a Furniture-category
+profit-margin KPI (<code>ingest_superstore.py</code> →
+<code>superstore_snapshot_kpi.csv</code>). This proves the pipeline
+isn’t hardcoded to one scripted story — it finds genuine, unscripted
+anomalies (several region/sub-category combos with real negative
+margins) in data we didn’t design.</p>
+<hr />
+<h2 id="the-kpi-semantic-layer-kpi_contracts.json">3. The KPI semantic
+layer — <code>kpi_contracts.json</code></h2>
+<p>Before any code touches raw numbers, every KPI is defined once in a
+single contract: what it means, how it’s calculated, which source it
+comes from, how often it refreshes, what threshold makes a movement
+“material,” who owns it, and who’s allowed to see it (by role, and by
+region row-level access). Every other script reads its rules from here
+instead of having thresholds hardcoded — this is the “governed KPI
+semantics” the brief asks for, and it’s why the whole system can extend
+to a new KPI by adding one JSON entry rather than rewriting code.</p>
+<hr />
+<h2 id="the-pipeline-stage-by-stage">4. The pipeline, stage by
+stage</h2>
+<p>Run in this exact order (each stage reads the previous stage’s
+output):</p>
+<pre><code>generate_data.py           -&gt; builds the synthetic CSVs
+ingest_superstore.py       -&gt; (optional) adds the real Superstore KPI
+detect_movements.py        -&gt; flags material movements          [NON-LLM]
+statistician.py            -&gt; price/volume decomposition         [NON-LLM]
+chronicler.py               -&gt; joins ops log evidence             [NON-LLM]
+pattern.py                  -&gt; historical analog matching         [NON-LLM]
+field.py                    -&gt; summarizes customer tickets        [LLM CALL]
+falsifier.py                -&gt; cross-checks all four agents        [NON-LLM]
+arbiter.py                   -&gt; final weighted verdict             [NON-LLM]
+access_control.py / persona_render.py -&gt; role-gated, persona-specific views</code></pre>
+<h3 id="detect_movements.py-detection-layer-non-llm">4.1
+<code>detect_movements.py</code> — Detection layer (non-LLM)</h3>
+<p>Reads each KPI’s <code>materiality_threshold</code> rule straight
+from the contract (e.g. “flag if revenue moves &gt;8% vs a 4-week
+trailing average”) and checks every region-week against it. <strong>No
+LLM is involved in deciding what counts as material</strong> — this is
+pure arithmetic. Output: <code>flagged_movements.json</code>, the list
+of things worth investigating further. This is also where we caught a
+real, honest false positive: NA’s ticket count got flagged because two
+tickets happened to contain the words “pricing” and “discount,” even
+though both tickets are positive. That’s a deliberate demonstration of
+why keyword-only detection isn’t enough on its own — which is exactly
+what the rest of the pipeline exists to catch.</p>
+<h3
+id="the-four-specialists-read-flagged_movements.json-work-in-parallelindependently">4.2
+The four specialists (read <code>flagged_movements.json</code>, work in
+parallel/independently)</h3>
+<ul>
+<li><p><strong>Statistician</strong> (<code>statistician.py</code>,
+non-LLM) — for every flagged revenue movement, splits the change into a
+<strong>price effect</strong> and a <strong>volume effect</strong> using
+a standard bridge decomposition:
+<code>price_effect = (P1-P0) * Q0</code>,
+<code>volume_effect = (Q1-Q0) * P0</code>. This is real arithmetic, not
+an LLM’s estimate. It found that APAC’s price increase would have
+actually <em>added</em> revenue on its own — the volume effect (lost
+customers) explains 100-120% of the actual decline. That’s the single
+most important number in the whole system: it numerically proves the
+story is about the competitor, not the price rise.</p></li>
+<li><p><strong>Chronicler</strong> (<code>chronicler.py</code>, non-LLM)
+— joins each flagged region-week against the ops/change log within a
+trailing window, looking for a logged event that could explain it. Found
+the price-change and competitor-intel events for APAC, and correctly
+dropped the price-change event once it aged out of the relevant window
+in later weeks.</p></li>
+<li><p><strong>Pattern</strong> (<code>pattern.py</code>, non-LLM) —
+checks whether a similar % movement has happened elsewhere in the
+region’s own history. Explicitly returns “no reliable analog” for
+APAC-South rather than forcing a weak match, because it only has 1 week
+of trailing data — this is the sparse-history handling the brief
+specifically asks for.</p></li>
+<li><p><strong>Field</strong> (<code>field.py</code>, <strong>the one
+LLM call in the whole system</strong>) — retrieves the exact tickets
+that triggered a complaint-volume flag (using the same keyword filter as
+detection, so there’s no drift between what got flagged and what gets
+explained) and asks an LLM to summarize what customers are actually
+saying. Its system prompt explicitly forbids it from inventing a
+negative narrative just because it was asked to investigate a
+“complaint” flag — which is exactly what let it correctly identify the
+NA tickets as positive, not complaints, contradicting the keyword-based
+flag that triggered it. Uses OpenRouter with a free-tier model
+(currently defaulting to NVIDIA Nemotron Ultra, with several other free
+models as automatic fallback if one is slow, rate-limited, or
+unavailable that day).</p></li>
+</ul>
+<h3 id="falsifier.py-tries-to-disprove-every-claim-non-llm">4.3
+<code>falsifier.py</code> — “Tries to disprove every claim”
+(non-LLM)</h3>
+<p>Cross-checks the four specialists’ outputs against each other using
+deterministic rules: - For revenue movements: does the numerically
+dominant driver (price vs. volume) have a matching ops event? Does
+Field’s ticket summary agree? Does Pattern have historical confidence?
+Combines these into an overall confidence tier (high/medium/low). - For
+complaint-volume flags: checks Field’s own confidence. If Field came
+back LOW confidence / positive sentiment despite the flag firing, the
+underlying flag gets explicitly marked <strong>REJECTED</strong> — this
+is where the NA false positive officially gets caught and killed before
+it reaches the final verdict.</p>
+<h3 id="arbiter.py-final-verdict-non-llm">4.4 <code>arbiter.py</code> —
+Final verdict (non-LLM)</h3>
+<p>Groups individual region-weeks into full “episodes” (APAC weeks 9-12
+is one continuous story, not four separate ones), computes a
+revenue-weighted attribution split across the episode, and writes the
+final natural-language verdict — e.g.:</p>
+<blockquote>
+<p>APAC: revenue down $289,003 across weeks 9-12. Price effect: -14% |
+Volume/competitive effect: +111% (dominant driver). Confidence: MEDIUM.
+Deal-level check: 10/12 lost deals, 5 cite the competitor, 8 cite price
+(5 cite both). Recommendation: continue monitoring / review win-loss
+reasons on the competitor-cited deals.</p>
+</blockquote>
+<p><strong>Honest limitation, stated directly in the code:</strong>
+“weighing by past accuracy” (the Arbiter’s defining idea) currently uses
+a fixed set of prior trust weights (numeric sources trusted most, thin
+pattern-matching trusted least) rather than weights <em>learned</em>
+from real analyst override history, because that history doesn’t exist
+yet in a fresh prototype. This is a legitimate, honestly-stated roadmap
+item — building the feedback loop that lets Arbiter’s weights improve
+over time as analysts confirm or override verdicts.</p>
+<h3 id="access_control.py-persona_render.py-governance-and-personas">4.5
+<code>access_control.py</code> + <code>persona_render.py</code> —
+Governance and personas</h3>
+<p><code>access_control.py</code> enforces the row-level region scoping
+and role-permission rules already declared in
+<code>kpi_contracts.json</code> — a regional sales manager scoped to
+EMEA gets denied when requesting APAC data, and every allow/deny
+decision is written to an append-only
+<code>access_audit_log.json</code>. <code>persona_render.py</code> takes
+the same Arbiter verdict and renders it two different ways depending on
+who’s asking: a CFO gets a 3-line financial-impact summary with one
+action; a regional sales manager gets full deal-level tactical detail —
+proving the system can serve different audiences from one underlying
+source of truth, gated through real access control rather than just
+cosmetic filtering.</p>
+<h3 id="telemetry">4.6 Telemetry</h3>
+<p><code>field.py</code> logs latency, token usage, and estimated cost
+for every LLM call it makes, written to <code>telemetry.json</code>. On
+a real run: 2 calls, ~12.6 seconds total, 1,523 tokens, $0.00 (free-tier
+model). This directly answers the brief’s requirement to show LLM
+economics — token consumption, latency, and cost per insight — with real
+measured numbers, not estimates.</p>
+<hr />
+<h2 id="why-this-design-in-one-paragraph">5. Why this design, in one
+paragraph</h2>
+<p>The brief explicitly warns against treating an LLM as the source of
+quantitative truth. Quorum’s answer: <strong>only one of nine pipeline
+stages calls an LLM at all</strong>, and even that one stage (Field) is
+deliberately scoped to something LLMs are actually good at — reading
+free text and summarizing sentiment — while every number, threshold,
+join, and attribution calculation in the system is plain, auditable
+Python. When the system is uncertain (APAC-South’s thin history, NA’s
+rejected false positive), it says so explicitly instead of papering over
+the gap with a confident-sounding sentence.</p>
+<hr />
+<h2 id="whats-not-built-yet-be-upfront-about-this-if-asked">6. What’s
+not built yet (be upfront about this if asked)</h2>
+<ul>
+<li><strong>Real feedback loop</strong>: Arbiter’s agent-trust weights
+are static priors, not learned from actual analyst override history
+yet.</li>
+<li><strong>UI</strong>: everything currently runs from the command
+line; a “panel debate” visual dashboard showing each agent’s independent
+claim before the verdict would be a strong addition before the
+pitch.</li>
+<li><strong>Live production data connectors</strong>: current sources
+are CSVs (synthetic
+<ul>
+<li>one real public dataset), not live Snowflake/Databricks/Tableau
+connections — reasonable for a prototype per the brief’s own
+instructions not to expect real enterprise data access.</li>
+</ul></li>
+<li><strong>Multi-KPI cross-correlation at scale</strong>: currently
+reasons about each flagged movement fairly independently; a more mature
+version would model correlated movements across many KPIs
+simultaneously.</li>
+</ul>
+<hr />
+<h2 id="how-to-run-the-whole-thing-end-to-end">7. How to run the whole
+thing end-to-end</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>python generate_data<span class="op">.</span><span class="fu">py</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>python ingest_superstore<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>input <span class="op">.</span>\SampleSuperstore<span class="op">.</span><span class="fu">csv</span> <span class="op">--</span>outdir <span class="op">.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>python detect_movements<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>python statistician<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>python chronicler<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>python pattern<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>python field<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>python falsifier<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>python arbiter<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>python access_control<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>python persona_render<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span> <span class="op">--</span>user cfo_maria</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>python persona_render<span class="op">.</span><span class="fu">py</span> <span class="op">--</span>datadir <span class="op">.</span> <span class="op">--</span>user sales_mgr_raj_apac</span></code></pre></div>
+</body>
+</html>

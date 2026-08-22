@@ -1,0 +1,6 @@
+event_id,date,region,event_type,description,logged_by,flagged_to_sales
+OPS-101,2026-07-20,APAC,price_change,Enterprise tier price increased 6% to offset input costs,pricing_team,No
+OPS-102,2026-07-27,APAC,competitive_intel,Field reports rival 'NimbusCo' undercutting on 2 large renewals,regional_ops,Yes
+OPS-103,2026-07-06,EMEA,support_incident,"Billing portal outage, 4 hours, resolved same day",support_eng,No
+OPS-104,2026-07-27,APAC-South,market_launch,"New sub-region go-live, limited local sales headcount",regional_ops,Yes
+OPS-105,2026-08-10,NA,promo,"Seasonal promo campaign launched, 10% discount code",marketing,Yes

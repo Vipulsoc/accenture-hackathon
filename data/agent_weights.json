@@ -1,0 +1,18 @@
+{
+  "weights": {
+    "statistician": 0.9167,
+    "chronicler": 0.875,
+    "field": 0.75,
+    "pattern": 0.5833
+  },
+  "sample_counts": {
+    "statistician": 1,
+    "chronicler": 1,
+    "field": 1,
+    "pattern": 1
+  },
+  "total_feedback_events": 1,
+  "prior_strength": 5,
+  "last_updated": "2026-08-22T12:10:17.588324+00:00",
+  "note": "Blend of static priors and observed analyst-agreement rate (Bayesian-style shrinkage -- see PRIOR_STRENGTH in feedback.py). arbiter.py loads this file automatically if present."
+}

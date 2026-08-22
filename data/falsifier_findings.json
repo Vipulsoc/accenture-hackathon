@@ -1,0 +1,132 @@
+[
+  {
+    "region": "APAC",
+    "week": 9,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": -26.0,
+    "volume_effect_pct": 120.7,
+    "ops_corroborated": true,
+    "field_corroborated": true,
+    "pattern_confidence": "medium",
+    "verdict": "SURVIVES",
+    "overall_confidence": "high",
+    "notes": [
+      "Numeric decomposition: price=-26.0% of change, volume=+120.7% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-102] Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+      "Field (customer tickets) confidence: HIGH (6 tickets summarized)",
+      "Pattern (historical analog) confidence: medium"
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 10,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": -13.6,
+    "volume_effect_pct": 110.4,
+    "ops_corroborated": true,
+    "field_corroborated": null,
+    "pattern_confidence": "medium",
+    "verdict": "SURVIVES",
+    "overall_confidence": "high",
+    "notes": [
+      "Numeric decomposition: price=-13.6% of change, volume=+110.4% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-102] Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+      "Pattern (historical analog) confidence: medium"
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 11,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": -9.1,
+    "volume_effect_pct": 107.6,
+    "ops_corroborated": true,
+    "field_corroborated": null,
+    "pattern_confidence": "medium",
+    "verdict": "SURVIVES",
+    "overall_confidence": "high",
+    "notes": [
+      "Numeric decomposition: price=-9.1% of change, volume=+107.6% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-102] Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+      "Pattern (historical analog) confidence: medium"
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 12,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": -0.0,
+    "volume_effect_pct": 100.0,
+    "ops_corroborated": true,
+    "field_corroborated": null,
+    "pattern_confidence": "medium",
+    "verdict": "SURVIVES",
+    "overall_confidence": "high",
+    "notes": [
+      "Numeric decomposition: price=-0.0% of change, volume=+100.0% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-102] Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+      "Pattern (historical analog) confidence: medium"
+    ]
+  },
+  {
+    "region": "APAC-South",
+    "week": 10,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": 10.6,
+    "volume_effect_pct": 91.4,
+    "ops_corroborated": true,
+    "field_corroborated": null,
+    "pattern_confidence": "no_analog",
+    "verdict": "SURVIVES",
+    "overall_confidence": "medium",
+    "notes": [
+      "Numeric decomposition: price=+10.6% of change, volume=+91.4% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-104] New sub-region go-live, limited local sales headcount",
+      "Pattern (historical analog) confidence: no_analog"
+    ]
+  },
+  {
+    "region": "APAC-South",
+    "week": 12,
+    "test": "revenue_movement",
+    "dominant_driver": "volume",
+    "price_effect_pct": -19.7,
+    "volume_effect_pct": 117.7,
+    "ops_corroborated": true,
+    "field_corroborated": null,
+    "pattern_confidence": "medium",
+    "verdict": "SURVIVES",
+    "overall_confidence": "high",
+    "notes": [
+      "Numeric decomposition: price=-19.7% of change, volume=+117.7% of change -> dominant driver = volume",
+      "Ops log CORROBORATES volume hypothesis: [OPS-104] New sub-region go-live, limited local sales headcount",
+      "Pattern (historical analog) confidence: medium"
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 9,
+    "test": "complaint_flag",
+    "verdict": "CONFIRMED",
+    "overall_confidence": "high",
+    "notes": [
+      "Field confirmed the complaint_volume flag with HIGH confidence across 6 tickets: Customers across APAC report noticeable price increases this quarter, with several noting the renewal cost hike was not clearly communicated in advanc..."
+    ]
+  },
+  {
+    "region": "NA",
+    "week": 11,
+    "test": "complaint_flag",
+    "verdict": "REJECTED",
+    "overall_confidence": "low",
+    "notes": [
+      "complaint_volume flag triggered on keyword match alone, but Field's actual reading of the ticket text came back LOW confidence -- this appears to be a FALSE POSITIVE of the keyword-based detector (e.g. positive/neutral mentions of 'pricing' or 'discount' misclassified as complaints). Do not treat as a validated signal.",
+      "Field summary: Customers in NA during week 11 expressed positive feedback on new promo pricing and an easy signup process, while another customer inquired about eligibility for a seasonal discount code. No competito..."
+    ]
+  }
+]

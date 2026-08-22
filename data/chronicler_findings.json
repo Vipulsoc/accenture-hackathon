@@ -1,0 +1,173 @@
+[
+  {
+    "region": "APAC",
+    "week": 9,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-101",
+        "event_date": "2026-07-20",
+        "event_week": 8,
+        "event_type": "price_change",
+        "description": "Enterprise tier price increased 6% to offset input costs",
+        "flagged_to_sales": "No",
+        "weeks_before_movement": 1
+      },
+      {
+        "event_id": "OPS-102",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "competitive_intel",
+        "description": "Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 0
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "2 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC",
+    "week": 10,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-101",
+        "event_date": "2026-07-20",
+        "event_week": 8,
+        "event_type": "price_change",
+        "description": "Enterprise tier price increased 6% to offset input costs",
+        "flagged_to_sales": "No",
+        "weeks_before_movement": 2
+      },
+      {
+        "event_id": "OPS-102",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "competitive_intel",
+        "description": "Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 1
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "2 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC",
+    "week": 11,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-101",
+        "event_date": "2026-07-20",
+        "event_week": 8,
+        "event_type": "price_change",
+        "description": "Enterprise tier price increased 6% to offset input costs",
+        "flagged_to_sales": "No",
+        "weeks_before_movement": 3
+      },
+      {
+        "event_id": "OPS-102",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "competitive_intel",
+        "description": "Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 2
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "2 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC",
+    "week": 12,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-102",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "competitive_intel",
+        "description": "Field reports rival 'NimbusCo' undercutting on 2 large renewals",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 3
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "1 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC-South",
+    "week": 10,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-104",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "market_launch",
+        "description": "New sub-region go-live, limited local sales headcount",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 1
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "1 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC-South",
+    "week": 12,
+    "triggering_kpi": "regional_revenue",
+    "matched_events": [
+      {
+        "event_id": "OPS-104",
+        "event_date": "2026-07-27",
+        "event_week": 9,
+        "event_type": "market_launch",
+        "description": "New sub-region go-live, limited local sales headcount",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 3
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "1 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "APAC",
+    "week": 8,
+    "triggering_kpi": "avg_selling_price",
+    "matched_events": [
+      {
+        "event_id": "OPS-101",
+        "event_date": "2026-07-20",
+        "event_week": 8,
+        "event_type": "price_change",
+        "description": "Enterprise tier price increased 6% to offset input costs",
+        "flagged_to_sales": "No",
+        "weeks_before_movement": 0
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "1 ops event(s) found within 3-week trailing window"
+  },
+  {
+    "region": "NA",
+    "week": 11,
+    "triggering_kpi": "complaint_volume",
+    "matched_events": [
+      {
+        "event_id": "OPS-105",
+        "event_date": "2026-08-10",
+        "event_week": 11,
+        "event_type": "promo",
+        "description": "Seasonal promo campaign launched, 10% discount code",
+        "flagged_to_sales": "Yes",
+        "weeks_before_movement": 0
+      }
+    ],
+    "confidence": "high",
+    "confidence_reason": "1 ops event(s) found within 3-week trailing window"
+  }
+]

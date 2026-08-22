@@ -1,0 +1,15 @@
+ticket_id,date,region,channel,text
+TCK-1000,2026-07-27,APAC,email,"Pricing has gone up noticeably this quarter, we're comparing with alternatives now."
+TCK-1001,2026-07-28,APAC,call_transcript,Your competitor NimbusCo quoted us 15% lower for a similar package.
+TCK-1002,2026-07-29,APAC,call_transcript,Renewal cost increase wasn't communicated clearly ahead of time.
+TCK-1003,2026-07-30,APAC,call_transcript,We're evaluating other vendors given the recent price change.
+TCK-1004,2026-07-31,APAC,chat,Sales rep mentioned NimbusCo is aggressively discounting in our market.
+TCK-1005,2026-08-01,APAC,call_transcript,Cost is becoming a concern relative to the value we're getting.
+TCK-1006,2026-07-06,EMEA,email,"Billing portal was down last week, couldn't process payment on time."
+TCK-1007,2026-07-07,EMEA,call_transcript,"Minor UI bug in the invoice export, not urgent."
+TCK-1008,2026-07-08,EMEA,call_transcript,"Asked about upgrading our plan, exploring options."
+TCK-1009,2026-07-09,EMEA,email,Support response time was a bit slow this week.
+TCK-1010,2026-07-10,EMEA,chat,Portal outage caused a delay but issue was resolved quickly.
+TCK-1011,2026-08-10,NA,chat,"Loved the new promo pricing, easy signup process."
+TCK-1012,2026-08-11,NA,email,Quick question about the seasonal discount code eligibility.
+TCK-1013,2026-08-12,NA,email,Great onboarding experience this month.

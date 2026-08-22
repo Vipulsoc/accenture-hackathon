@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorum — Case File</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2534; --ink-soft:#3D4759; --ink-mute:#6B7486;
+    --paper:#EEF0F4; --card:#FBFBFC; --card-edge:#D8DCE4;
+    --brass:#B8862E; --brass-dim:#DDC391; --brass-deep:#7A5A1E;
+    --confirm:#2F6B4F; --confirm-bg:#E3EFE8;
+    --reject:#A13D2B; --reject-bg:#F5E5E1;
+    --pending:#6B7486; --pending-bg:#E7E9ED;
+    --thread:#B7BCC6;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; padding:32px 20px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.08em;
+    color:var(--brass-deep);text-transform:uppercase;margin:0 0 6px;
+  }
+  h1{font-size:28px;font-weight:600;color:var(--ink);}
+  .subhead{color:var(--ink-mute);font-size:14.5px;margin-top:6px;max-width:620px;line-height:1.55;}
+
+  /* Case tabs */
+  .tabs{display:flex;gap:2px;margin:28px 0 6px;border-bottom:1.5px solid var(--card-edge);}
+  .tab{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:10px 18px;
+    cursor:pointer;color:var(--ink-mute);border-bottom:2.5px solid transparent;
+    transition:color .15s,border-color .15s;user-select:none;
+  }
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--brass-deep);border-color:var(--brass);font-weight:500;}
+
+  .case-meta{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin:18px 0 30px;flex-wrap:wrap;gap:12px;
+  }
+  .case-title{font-size:19px;font-weight:600;}
+  .case-sub{font-size:13px;color:var(--ink-mute);margin-top:4px;}
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+    padding:5px 12px;border-radius:4px;letter-spacing:.03em;text-transform:uppercase;
+    border:1.5px solid currentColor;
+  }
+  .stamp.confirmed{color:var(--confirm);background:var(--confirm-bg);}
+  .stamp.rejected{color:var(--reject);background:var(--reject-bg);}
+  .stamp.pending{color:var(--pending);background:var(--pending-bg);}
+
+  /* Corkboard */
+  .board{position:relative;padding:10px 0 40px;}
+  .witness-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:6px;
+  }
+  @media (max-width:760px){ .witness-row{grid-template-columns:repeat(2,1fr);} }
+
+  .card{
+    background:var(--card);border:1px solid var(--card-edge);border-radius:var(--radius);
+    padding:16px 15px 14px;position:relative;min-height:190px;
+    display:flex;flex-direction:column;
+  }
+  .pin{
+    width:9px;height:9px;border-radius:50%;background:var(--brass);
+    position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .card-role{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--brass-deep);
+    text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;
+  }
+  .card-name{font-size:15px;font-weight:600;margin-bottom:8px;}
+  .card-body{font-size:12.5px;color:var(--ink-soft);line-height:1.5;flex:1;}
+  .card-body .num{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-weight:500;}
+  .card-foot{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:10px;padding-top:10px;border-top:1px dashed var(--card-edge);
+  }
+  .conf-badge{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+    padding:3px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.03em;
+  }
+  .conf-high{color:var(--confirm);background:var(--confirm-bg);}
+  .conf-medium{color:var(--brass-deep);background:var(--brass-dim);}
+  .conf-low, .conf-no_analog{color:var(--reject);background:var(--reject-bg);}
+  .conf-na{color:var(--pending);background:var(--pending-bg);}
+  .weight-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-mute);}
+
+  /* Thread connectors */
+  .threads{height:44px;position:relative;margin:0 auto;max-width:760px;}
+  .threads svg{width:100%;height:100%;display:block;}
+
+  /* Verdict */
+  .verdict{
+    background:var(--ink);color:#F4F5F7;border-radius:var(--radius);
+    padding:22px 24px;margin-top:0;
+  }
+  .verdict-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;}
+  .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-dim);text-transform:uppercase;letter-spacing:.07em;}
+  .verdict-title{font-size:17px;font-weight:600;margin-top:3px;}
+  .verdict-text{font-size:13.5px;line-height:1.65;color:#D3D6DC;}
+  .verdict-text .num{font-family:'IBM Plex Mono',monospace;color:#fff;font-weight:500;}
+  .attr-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:14px 0 8px;background:#2A3547;}
+  .attr-bar div{height:100%;}
+  .attr-legend{display:flex;gap:18px;font-size:11.5px;color:#AEB4BF;margin-bottom:14px;}
+  .attr-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:9px;height:9px;border-radius:2px;}
+
+  /* Feedback toggle */
+  .feedback-panel{
+    margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);
+  }
+  .fb-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .fb-label{font-size:12.5px;color:#AEB4BF;}
+  .switch{
+    position:relative;width:44px;height:24px;background:#3A4457;border-radius:12px;
+    cursor:pointer;transition:background .2s;flex-shrink:0;
+  }
+  .switch.on{background:var(--brass);}
+  .switch .knob{
+    position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+    background:#fff;transition:transform .2s;
+  }
+  .switch.on .knob{transform:translateX(20px);}
+  .fb-note{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--brass-dim);}
+
+  .weights-strip{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap;}
+  .wchip{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#AEB4BF;
+    background:#2A3547;padding:4px 9px;border-radius:4px;
+    display:flex;gap:6px;align-items:center;
+  }
+  .wchip b{color:#fff;font-weight:600;}
+  .wchip .delta{color:var(--brass-dim);}
+
+  /* Footer strip */
+  .telemetry{
+    display:flex;gap:22px;margin-top:22px;flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-mute);
+    border-top:1px solid var(--card-edge);padding-top:14px;
+  }
+  .telemetry b{color:var(--ink);font-weight:600;}
+
+  .empty-note{
+    font-size:13px;color:var(--ink-mute);padding:20px 0;font-style:italic;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Quorum — investigation log</p>
+    <h1>Four specialists testify blind. Then they argue in the open.</h1>
+    <p class="subhead">Every card below is one agent's independent finding, computed before any of the others were consulted. The verdict at the bottom is what survives cross-examination — including two cases where the panel deliberately does <em>not</em> reach a confident conclusion.</p>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="caseView"></div>
+
+  <div class="telemetry">
+    <span>Field LLM calls: <b>2</b></span>
+    <span>Total latency: <b>12.6s</b></span>
+    <span>Tokens: <b>1,523</b></span>
+    <span>Estimated cost: <b>$0.00</b></span>
+    <span>Model: <b>nvidia/nemotron-3-ultra-550b-a55b:free</b></span>
+  </div>
+
+</div>
+
+<script>
+const DATA = {
+  apac: {
+    label: "APAC", weeks: "Weeks 9–12", stamp: "confirmed",
+    stampText: "Confirmed",
+    witnesses: [
+      { role:"Statistician", name:"Numbers", body:"Revenue down <span class=\"num\">$289,003</span> cumulative. Price effect: <span class=\"num\">-14%</span> of change. Volume/competitive effect: <span class=\"num\">+111%</span> of change — price alone would have <em>added</em> revenue; volume loss dominates entirely.", conf:"high" },
+      { role:"Chronicler", name:"Ops log", body:"Two matching events found: <span class=\"num\">OPS-101</span> price increase (6%, week 8) and <span class=\"num\">OPS-102</span> competitive intel — rival NimbusCo undercutting on 2 large renewals (week 9).", conf:"high" },
+      { role:"Pattern", name:"History", body:"Best historical analog: APAC-South week 12 (<span class=\"num\">-8.6%</span> vs <span class=\"num\">-8.5%</span>, 0.1pp apart). Moderate confidence — analog itself has a solid trailing window.", conf:"medium" },
+      { role:"Field", name:"Customer voice", body:"6 tickets analyzed. Competitor <span class=\"num\">NimbusCo</span> named in 2, quoting <span class=\"num\">15%</span> lower. Renewal cost hike cited as poorly communicated. Consistent, unambiguous signal.", conf:"high" },
+    ],
+    verdictTitle: "APAC revenue episode",
+    verdictBefore: "Revenue down <span class=\"num\">$289,003</span> across weeks 9–12. Volume/competitive pressure dominates (<span class=\"num\">+111%</span> of movement) — the price increase alone would have partially offset the drop, not caused it. Deal check: <span class=\"num\">10/12</span> lost deals, <span class=\"num\">5</span> cite the competitor by name, <span class=\"num\">8</span> cite price.",
+    scoreBefore: 0.68, tierBefore: "MEDIUM",
+    recBefore: "Confidence not yet high enough for a firm attribution — continue monitoring 2–4 weeks.",
+    scoreAfter: 0.74, tierAfter: "HIGH",
+    recAfter: "Review win/loss reasons on the 5 competitor-cited lost deals to quantify displaced revenue precisely.",
+    attribution: [ {label:"Volume / competitive", pct:79, color:"#B8862E"}, {label:"Price", pct:14, color:"#6B7486"}, {label:"Interaction / mix", pct:7, color:"#3D4759"} ],
+    weightsBefore: {statistician:0.90, chronicler:0.85, field:0.70, pattern:0.50},
+    weightsAfter: {statistician:0.929, chronicler:0.893, field:0.786, pattern:0.643},
+  },
+  apacsouth: {
+    label: "APAC-South", weeks: "Weeks 10, 12", stamp: "pending",
+    stampText: "Insufficient evidence",
+    witnesses: [
+      { role:"Statistician", name:"Numbers", body:"Revenue down <span class=\"num\">$13,320</span> combined. Volume effect <span class=\"num\">+98%</span> of movement (week 10) dominant, but baseline built from only <span class=\"num\">1 week</span> of trailing history.", conf:"medium" },
+      { role:"Chronicler", name:"Ops log", body:"Matched <span class=\"num\">OPS-104</span> — new sub-region go-live, limited local sales headcount. Explains a volume-side cause distinct from APAC's competitor story.", conf:"high" },
+      { role:"Pattern", name:"History", body:"Week 10: <span class=\"num\">no reliable analog</span> — only 1 trailing week of data. Explicitly declines to force a match rather than fabricate confidence.", conf:"no_analog" },
+      { role:"Field", name:"Customer voice", body:"No complaint-volume flag triggered for this region — no ticket investigation was run.", conf:"na" },
+    ],
+    verdictTitle: "APAC-South revenue episode",
+    verdictBefore: "Revenue down <span class=\"num\">$13,320</span> across weeks 10–12. Volume/competitive effect dominant (<span class=\"num\">+98%</span>) but the region is only 4 weeks old — too little history for a confident historical comparison.",
+    scoreBefore: 0.58, tierBefore: "MEDIUM",
+    recBefore: "Confidence not yet high enough for a firm attribution — continue monitoring next 2–4 weeks before final action.",
+    scoreAfter: 0.62, tierAfter: "MEDIUM",
+    recAfter: "Same recommendation — this episode has no analyst feedback recorded yet, so weights shift only slightly via the shared prior update.",
+    attribution: [ {label:"Volume / competitive", pct:95, color:"#B8862E"}, {label:"Price", pct:3, color:"#6B7486"}, {label:"Interaction / mix", pct:2, color:"#3D4759"} ],
+    weightsBefore: {statistician:0.90, chronicler:0.85, field:0.70, pattern:0.50},
+    weightsAfter: {statistician:0.929, chronicler:0.893, field:0.786, pattern:0.643},
+  },
+  na: {
+    label: "NA", weeks: "Week 11", stamp: "rejected",
+    stampText: "Rejected — false positive",
+    witnesses: [
+      { role:"Detection", name:"Keyword flag", body:"2 tickets matched the price/competitor keyword filter — flagged purely on vocabulary (\"pricing\", \"discount\"), with zero baseline for comparison.", conf:"na" },
+      { role:"Chronicler", name:"Ops log", body:"Matched <span class=\"num\">OPS-105</span> — a seasonal promo campaign, 10% discount code, launched the same week. Context, not a threat signal.", conf:"medium" },
+      { role:"Field", name:"Customer voice", body:"Both tickets read as <span class=\"num\">positive</span> — one praises the promo pricing, one is a routine eligibility question. No competitor named. Sentiment does not match a complaint.", conf:"low" },
+      { role:"Falsifier", name:"Cross-check", body:"Field's LOW-confidence, positive-sentiment read directly contradicts what the keyword flag implied. Verdict: <span class=\"num\">REJECTED</span> as a false positive.", conf:"low" },
+    ],
+    verdictTitle: "NA complaint-volume alert",
+    verdictBefore: "complaint_volume flag triggered on keyword match alone, but Field's actual reading of the ticket text came back positive, not negative. This is a false positive of the keyword-based detector — no action needed.",
+    scoreBefore: null, tierBefore: "REJECTED",
+    recBefore: "Refine detection keywords to require negative-sentiment context, not topic keywords alone.",
+    scoreAfter: null, tierAfter: "REJECTED",
+    recAfter: "Same conclusion — this is a detection-layer finding, not something analyst feedback on the APAC episode changes.",
+    attribution: null,
+    weightsBefore: {statistician:0.90, chronicler:0.85, field:0.70, pattern:0.50},
+    weightsAfter: {statistician:0.929, chronicler:0.893, field:0.786, pattern:0.643},
+    isRejected: true,
+  }
+};
+
+const CASE_ORDER = ["apac","apacsouth","na"];
+let activeCase = "apac";
+let feedbackOn = false;
+
+function confLabel(c){
+  return {high:"High", medium:"Medium", low:"Low", no_analog:"No analog", na:"N/A"}[c] || c;
+}
+
+function renderTabs(){
+  const el = document.getElementById('tabs');
+  el.innerHTML = CASE_ORDER.map(k => {
+    const d = DATA[k];
+    return `<div class="tab ${k===activeCase?'active':''}" data-case="${k}">${d.label} · ${d.weeks}</div>`;
+  }).join('');
+  el.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => { activeCase = t.dataset.case; renderTabs(); renderCase(); });
+  });
+}
+
+function renderCase(){
+  const d = DATA[activeCase];
+  const container = document.getElementById('caseView');
+
+  const witnessCards = d.witnesses.map(w => `
+    <div class="card">
+      <div class="pin"></div>
+      <div class="card-role">${w.role}</div>
+      <div class="card-name">${w.name}</div>
+      <div class="card-body">${w.body}</div>
+      <div class="card-foot">
+        <span class="conf-badge conf-${w.conf}">${confLabel(w.conf)}</span>
+      </div>
+    </div>
+  `).join('');
+
+  let attrHtml = '';
+  if (d.attribution) {
+    const bar = d.attribution.map(a => `<div style="width:${a.pct}%;background:${a.color}"></div>`).join('');
+    const legend = d.attribution.map(a => `<span><span class="swatch" style="background:${a.color}"></span>${a.label} · ${a.pct}%</span>`).join('');
+    attrHtml = `<div class="attr-bar">${bar}</div><div class="attr-legend">${legend}</div>`;
+  }
+
+  const tier = feedbackOn ? d.tierAfter : d.tierBefore;
+  const rec = feedbackOn ? d.recAfter : d.recBefore;
+  const verdictText = d.verdictBefore;
+
+  const weights = feedbackOn ? d.weightsAfter : d.weightsBefore;
+  const weightsChips = Object.entries(weights).map(([k,v]) => {
+    const before = d.weightsBefore[k];
+    const delta = feedbackOn ? `<span class="delta">+${(v-before).toFixed(2)}</span>` : '';
+    return `<div class="wchip">${k} <b>${v.toFixed(2)}</b> ${delta}</div>`;
+  }).join('');
+
+  const stampClass = d.isRejected ? 'rejected' : (tier === 'HIGH' ? 'confirmed' : 'pending');
+
+  container.innerHTML = `
+    <div class="case-meta">
+      <div>
+        <div class="case-title">${d.verdictTitle}</div>
+        <div class="case-sub">${d.witnesses.length} independent findings, cross-checked before verdict</div>
+      </div>
+      <span class="stamp ${stampClass}">${d.isRejected ? d.stampText : (tier + ' confidence')}</span>
+    </div>
+
+    <div class="board">
+      <div class="witness-row">${witnessCards}</div>
+      <div class="threads">
+        <svg viewBox="0 0 760 44" preserveAspectRatio="none">
+          <line x1="95" y1="0" x2="380" y2="40" stroke="#B7BCC6" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="285" y1="0" x2="380" y2="40" stroke="#B7BCC6" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="475" y1="0" x2="380" y2="40" stroke="#B7BCC6" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="665" y1="0" x2="380" y2="40" stroke="#B7BCC6" stroke-width="1" stroke-dasharray="3 4"/>
+        </svg>
+      </div>
+
+      <div class="verdict">
+        <div class="verdict-head">
+          <div>
+            <div class="verdict-label">Falsifier + Arbiter verdict</div>
+            <div class="verdict-title">${d.verdictTitle}</div>
+          </div>
+        </div>
+        <div class="verdict-text">${verdictText}</div>
+        ${attrHtml}
+        <div class="verdict-text" style="margin-top:8px;"><b style="color:#fff;">Recommendation:</b> ${rec}</div>
+
+        ${!d.isRejected ? `
+        <div class="feedback-panel">
+          <div class="fb-row">
+            <div class="switch ${feedbackOn ? 'on' : ''}" id="fbSwitch"><div class="knob"></div></div>
+            <span class="fb-label">Analyst feedback recorded (win/loss review confirmed competitor attribution)</span>
+          </div>
+          ${feedbackOn ? `<div class="fb-note" style="margin-top:8px;">Episode score ${d.scoreBefore.toFixed(2)} → ${d.scoreAfter.toFixed(2)} · confidence ${d.tierBefore} → ${d.tierAfter}</div>` : ''}
+          <div class="weights-strip">${weightsChips}</div>
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+
+  const sw = document.getElementById('fbSwitch');
+  if (sw) sw.addEventListener('click', () => { feedbackOn = !feedbackOn; renderCase(); });
+}
+
+renderTabs();
+renderCase();
+</script>
+</body>
+</html>

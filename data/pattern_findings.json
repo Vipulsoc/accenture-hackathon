@@ -1,0 +1,89 @@
+[
+  {
+    "region": "APAC",
+    "week": 9,
+    "target_pct_change": -17.0,
+    "confidence": "medium",
+    "confidence_reason": "1 historical analog(s) found within \u00b16.0pp -- target has solid history but the best analog is itself thin on history",
+    "analogs": [
+      {
+        "region": "APAC-South",
+        "week": 10,
+        "pct_change": -21.2,
+        "diff_from_target": 4.2,
+        "history_weeks_available": 1
+      }
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 10,
+    "target_pct_change": -21.3,
+    "confidence": "medium",
+    "confidence_reason": "1 historical analog(s) found within \u00b16.0pp -- target has solid history but the best analog is itself thin on history",
+    "analogs": [
+      {
+        "region": "APAC-South",
+        "week": 10,
+        "pct_change": -21.2,
+        "diff_from_target": 0.1,
+        "history_weeks_available": 1
+      }
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 11,
+    "target_pct_change": -15.5,
+    "confidence": "medium",
+    "confidence_reason": "1 historical analog(s) found within \u00b16.0pp -- target has solid history but the best analog is itself thin on history",
+    "analogs": [
+      {
+        "region": "APAC-South",
+        "week": 10,
+        "pct_change": -21.2,
+        "diff_from_target": 5.7,
+        "history_weeks_available": 1
+      }
+    ]
+  },
+  {
+    "region": "APAC",
+    "week": 12,
+    "target_pct_change": -8.6,
+    "confidence": "medium",
+    "confidence_reason": "1 historical analog(s) found within \u00b16.0pp -- target has solid history but the best analog is itself thin on history",
+    "analogs": [
+      {
+        "region": "APAC-South",
+        "week": 12,
+        "pct_change": -8.5,
+        "diff_from_target": 0.1,
+        "history_weeks_available": 3
+      }
+    ]
+  },
+  {
+    "region": "APAC-South",
+    "week": 10,
+    "confidence": "no_analog",
+    "confidence_reason": "only 1 trailing week(s) of history for APAC-South itself -- too little data to responsibly claim a historical pattern match. Reporting 'no reliable analog' rather than forcing one.",
+    "analogs": []
+  },
+  {
+    "region": "APAC-South",
+    "week": 12,
+    "target_pct_change": -8.5,
+    "confidence": "medium",
+    "confidence_reason": "1 historical analog(s) found within \u00b16.0pp -- analog has solid history but the target itself is thin on history",
+    "analogs": [
+      {
+        "region": "APAC",
+        "week": 12,
+        "pct_change": -8.6,
+        "diff_from_target": 0.1,
+        "history_weeks_available": 4
+      }
+    ]
+  }
+]

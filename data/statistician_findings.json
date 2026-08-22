@@ -1,0 +1,156 @@
+{
+  "revenue_decompositions": [
+    {
+      "region": "APAC",
+      "week": 9,
+      "baseline_price": 243.6,
+      "baseline_units": 2007.75,
+      "current_price": 254.4,
+      "current_units": 1595.0,
+      "delta_revenue_usd": -83319.9,
+      "price_effect_usd": 21683.7,
+      "volume_effect_usd": -100545.9,
+      "interaction_effect_usd": -4457.7,
+      "price_effect_pct_of_total": -26.0,
+      "volume_effect_pct_of_total": 120.7,
+      "interaction_effect_pct_of_total": 5.4,
+      "reconciliation_check_usd": 0.0,
+      "confidence": "high",
+      "confidence_reason": "4/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 4
+    },
+    {
+      "region": "APAC",
+      "week": 10,
+      "baseline_price": 247.2,
+      "baseline_units": 1901.75,
+      "current_price": 254.4,
+      "current_units": 1452.0,
+      "delta_revenue_usd": -100723.8,
+      "price_effect_usd": 13692.6,
+      "volume_effect_usd": -111178.2,
+      "interaction_effect_usd": -3238.2,
+      "price_effect_pct_of_total": -13.6,
+      "volume_effect_pct_of_total": 110.4,
+      "interaction_effect_pct_of_total": 3.2,
+      "reconciliation_check_usd": 0.0,
+      "confidence": "high",
+      "confidence_reason": "4/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 4
+    },
+    {
+      "region": "APAC",
+      "week": 11,
+      "baseline_price": 250.8,
+      "baseline_units": 1761.25,
+      "current_price": 254.4,
+      "current_units": 1463.0,
+      "delta_revenue_usd": -69534.3,
+      "price_effect_usd": 6340.5,
+      "volume_effect_usd": -74801.1,
+      "interaction_effect_usd": -1073.7,
+      "price_effect_pct_of_total": -9.1,
+      "volume_effect_pct_of_total": 107.6,
+      "interaction_effect_pct_of_total": 1.5,
+      "reconciliation_check_usd": -0.0,
+      "confidence": "high",
+      "confidence_reason": "4/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 4
+    },
+    {
+      "region": "APAC",
+      "week": 12,
+      "baseline_price": 254.4,
+      "baseline_units": 1619.25,
+      "current_price": 254.4,
+      "current_units": 1480.0,
+      "delta_revenue_usd": -35425.2,
+      "price_effect_usd": 0.0,
+      "volume_effect_usd": -35425.2,
+      "interaction_effect_usd": -0.0,
+      "price_effect_pct_of_total": -0.0,
+      "volume_effect_pct_of_total": 100.0,
+      "interaction_effect_pct_of_total": 0.0,
+      "reconciliation_check_usd": 0.0,
+      "confidence": "high",
+      "confidence_reason": "4/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 4
+    },
+    {
+      "region": "APAC-South",
+      "week": 10,
+      "baseline_price": 235.77,
+      "baseline_units": 196.0,
+      "current_price": 230.46,
+      "current_units": 158.0,
+      "delta_revenue_usd": -9798.24,
+      "price_effect_usd": -1040.76,
+      "volume_effect_usd": -8959.26,
+      "interaction_effect_usd": 201.78,
+      "price_effect_pct_of_total": 10.6,
+      "volume_effect_pct_of_total": 91.4,
+      "interaction_effect_pct_of_total": -2.1,
+      "reconciliation_check_usd": 0.0,
+      "confidence": "low",
+      "confidence_reason": "1/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 1
+    },
+    {
+      "region": "APAC-South",
+      "week": 12,
+      "baseline_price": 234.65,
+      "baseline_units": 177.67,
+      "current_price": 238.55,
+      "current_units": 160.0,
+      "delta_revenue_usd": -3522.08,
+      "price_effect_usd": 692.31,
+      "volume_effect_usd": -4145.54,
+      "interaction_effect_usd": -68.84,
+      "price_effect_pct_of_total": -19.7,
+      "volume_effect_pct_of_total": 117.7,
+      "interaction_effect_pct_of_total": 2.0,
+      "reconciliation_check_usd": 0.0,
+      "confidence": "medium",
+      "confidence_reason": "3/4 trailing weeks available for baseline",
+      "trailing_weeks_used": 3
+    }
+  ],
+  "other_kpi_summaries": [
+    {
+      "kpi_id": "avg_selling_price",
+      "region": "APAC",
+      "week": 8,
+      "reason": "+6.0% vs prior week (threshold: \u00b14.0%)"
+    },
+    {
+      "kpi_id": "win_rate",
+      "region": "APAC",
+      "week": 9,
+      "reason": "win rate 0% on 4 deals (floor: 50%)"
+    },
+    {
+      "kpi_id": "win_rate",
+      "region": "APAC",
+      "week": 10,
+      "reason": "win rate 25% on 8 deals (floor: 50%)"
+    },
+    {
+      "kpi_id": "complaint_volume",
+      "region": "APAC",
+      "week": 9,
+      "reason": "6 price/competitor-tagged tickets vs baseline 0.0 (threshold: 3.0x)"
+    },
+    {
+      "kpi_id": "complaint_volume",
+      "region": "NA",
+      "week": 11,
+      "reason": "2 price/competitor-tagged tickets vs baseline 0.0 (threshold: 3.0x)"
+    },
+    {
+      "kpi_id": "marketing_spend",
+      "region": "NA",
+      "week": 11,
+      "reason": "+43.4% vs prior week (threshold: \u00b115.0%)"
+    }
+  ]
+}

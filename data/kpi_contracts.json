@@ -1,0 +1,138 @@
+{
+  "kpis": [
+    {
+      "kpi_id": "regional_revenue",
+      "name": "Regional Weekly Revenue",
+      "definition": "Sum of closed-won order value per region per week, in USD.",
+      "formula": "SUM(units_sold * avg_price_usd) GROUP BY region, week",
+      "grain": "region-week",
+      "source_system": "sales_weekly.csv (Sales DB)",
+      "refresh_cadence": "weekly",
+      "materiality_threshold": {
+        "method": "week-over-week % change vs 4-week trailing average",
+        "flag_if_abs_pct_change_gt": 8.0
+      },
+      "owner": "VP Sales Ops",
+      "lineage": [
+        "Sales DB -> weekly ETL -> sales_weekly.csv"
+      ],
+      "access_tags": {
+        "row_level": "region",
+        "column_level": "none",
+        "roles_allowed": [
+          "cfo",
+          "regional_sales_manager",
+          "sales_ops_analyst"
+        ]
+      }
+    },
+    {
+      "kpi_id": "avg_selling_price",
+      "name": "Average Selling Price",
+      "definition": "Revenue-weighted average unit price per region per week.",
+      "formula": "revenue_usd / units_sold",
+      "grain": "region-week",
+      "source_system": "sales_weekly.csv (Sales DB)",
+      "refresh_cadence": "weekly",
+      "materiality_threshold": {
+        "method": "week-over-week % change",
+        "flag_if_abs_pct_change_gt": 4.0
+      },
+      "owner": "Pricing Team",
+      "lineage": [
+        "Pricing engine -> Sales DB -> sales_weekly.csv"
+      ],
+      "access_tags": {
+        "row_level": "region",
+        "column_level": "none",
+        "roles_allowed": [
+          "cfo",
+          "regional_sales_manager",
+          "pricing_team"
+        ]
+      }
+    },
+    {
+      "kpi_id": "win_rate",
+      "name": "Deal Win Rate",
+      "definition": "Share of closed deals (region, week) that closed as won, plus loss-reason tagging.",
+      "formula": "COUNT(outcome='won') / COUNT(*) GROUP BY region, week_closed",
+      "grain": "region-week",
+      "source_system": "deals.csv (CRM)",
+      "refresh_cadence": "daily",
+      "materiality_threshold": {
+        "method": "absolute win rate below floor",
+        "flag_if_win_rate_below": 0.5
+      },
+      "owner": "Regional Sales Manager",
+      "lineage": [
+        "CRM opportunity records -> nightly export -> deals.csv"
+      ],
+      "access_tags": {
+        "row_level": "region",
+        "column_level": "deal_value_usd:restricted_to[cfo,regional_sales_manager]",
+        "roles_allowed": [
+          "cfo",
+          "regional_sales_manager"
+        ]
+      }
+    },
+    {
+      "kpi_id": "complaint_volume",
+      "name": "Price/Competitor-Related Complaint Volume",
+      "definition": "Count of support/CRM tickets per region per week whose text references price or a named competitor (via retrieval + keyword/semantic match).",
+      "formula": "COUNT(tickets WHERE topic IN ('price','competitor')) GROUP BY region, week",
+      "grain": "region-week",
+      "source_system": "customer_tickets.csv (CRM/Support, unstructured)",
+      "refresh_cadence": "near-real-time",
+      "materiality_threshold": {
+        "method": "count vs 4-week trailing baseline",
+        "flag_if_count_gt_baseline_multiple": 3.0
+      },
+      "owner": "Customer Success Lead",
+      "lineage": [
+        "Support platform + call transcripts -> text extraction -> customer_tickets.csv"
+      ],
+      "access_tags": {
+        "row_level": "region",
+        "column_level": "text:pii_scrubbed",
+        "roles_allowed": [
+          "cfo",
+          "regional_sales_manager",
+          "customer_success_lead"
+        ]
+      }
+    },
+    {
+      "kpi_id": "marketing_spend",
+      "name": "Regional Marketing Spend",
+      "definition": "Total marketing spend per region per week across paid channels.",
+      "formula": "SUM(spend_usd) GROUP BY region, week",
+      "grain": "region-week",
+      "source_system": "marketing_spend.csv (Marketing platform)",
+      "refresh_cadence": "weekly",
+      "materiality_threshold": {
+        "method": "week-over-week % change",
+        "flag_if_abs_pct_change_gt": 15.0
+      },
+      "owner": "Marketing Ops",
+      "lineage": [
+        "Ad platforms -> marketing data warehouse -> marketing_spend.csv"
+      ],
+      "access_tags": {
+        "row_level": "region",
+        "column_level": "none",
+        "roles_allowed": [
+          "cfo",
+          "regional_sales_manager",
+          "marketing_ops"
+        ]
+      }
+    }
+  ],
+  "notes": {
+    "sparse_history_kpi": "APAC-South region within regional_revenue only has 4 weeks of history (launched week 9) - Pattern agent should return low-confidence/no-analog for this segment.",
+    "low_confidence_case": "EMEA complaint_volume ticket text is dominated by a resolved billing outage, not price/competitor signal, and EMEA revenue is flat - this should NOT be conflated with the APAC story; used to test the Falsifier's ability to reject a spurious correlation.",
+    "role_based_security_scenario": "A regional_sales_manager scoped to EMEA querying APAC data should be denied/masked at row level, with the attempt logged for audit."
+  }
+}

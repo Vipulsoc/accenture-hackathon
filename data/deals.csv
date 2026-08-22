@@ -1,0 +1,13 @@
+deal_id,region,week_closed,outcome,deal_value_usd,reason_notes
+DL-5000,APAC,9,lost,25708,price sensitivity; competitor (NimbusCo) offer
+DL-5001,APAC,10,lost,39867,price sensitivity; competitor (NimbusCo) offer
+DL-5002,APAC,10,lost,56943,price sensitivity; competitor (NimbusCo) offer
+DL-5003,APAC,9,lost,59866,price sensitivity; competitor (NimbusCo) offer
+DL-5004,APAC,10,lost,18665,price sensitivity; competitor (NimbusCo) offer
+DL-5005,APAC,9,lost,17103,price sensitivity
+DL-5006,APAC,10,lost,41290,price sensitivity
+DL-5007,APAC,10,lost,19337,price sensitivity
+DL-5008,APAC,9,lost,52170,n/a
+DL-5009,APAC,10,lost,28934,n/a
+DL-5010,APAC,10,won,40928,n/a
+DL-5011,APAC,10,won,24363,n/a

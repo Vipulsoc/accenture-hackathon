@@ -1,0 +1,12 @@
+[
+  {
+    "region": "APAC", "week": 9, "n_tickets_matched": 6,
+    "summary": "Customers across APAC report noticeable price increases this quarter, with several noting the renewal cost hike was not clearly communicated in advance. Multiple tickets name NimbusCo as a competitor quoting roughly 15% less for comparable packages and allegedly discounting aggressively in the region. As a result, several accounts say they are actively comparing alternatives or evaluating other vendors, and at least one questions whether the current cost aligns with the value received.\n\nConfidence: HIGH",
+    "confidence": "HIGH", "n_tickets_summarized": 6, "model_used": "nvidia/nemotron-3-ultra-550b-a55b:free"
+  },
+  {
+    "region": "NA", "week": 11, "n_tickets_matched": 2,
+    "summary": "Customers in NA during week 11 expressed positive feedback on new promo pricing and an easy signup process, while another customer inquired about eligibility for a seasonal discount code. No competitor names were mentioned. Sentiment is mixed between positive and neutral inquiry.\nConfidence: LOW (only two tickets, limited scope).",
+    "confidence": "LOW", "n_tickets_summarized": 2, "model_used": "nvidia/nemotron-3-ultra-550b-a55b:free"
+  }
+]

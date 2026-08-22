@@ -1,0 +1,47 @@
+[
+  {
+    "timestamp": "2026-08-22T12:10:17.660608+00:00",
+    "user_role": "cfo",
+    "user_assigned_region": null,
+    "requested_region": "APAC",
+    "requested_kpi": "regional_revenue",
+    "allowed": true,
+    "reason": "Access granted within role and region scope."
+  },
+  {
+    "timestamp": "2026-08-22T12:10:17.660809+00:00",
+    "user_role": "regional_sales_manager",
+    "user_assigned_region": "APAC",
+    "requested_region": "APAC",
+    "requested_kpi": "regional_revenue",
+    "allowed": true,
+    "reason": "Access granted within role and region scope."
+  },
+  {
+    "timestamp": "2026-08-22T12:10:17.661096+00:00",
+    "user_role": "regional_sales_manager",
+    "user_assigned_region": "EMEA",
+    "requested_region": "APAC",
+    "requested_kpi": "regional_revenue",
+    "allowed": false,
+    "reason": "Row-level region scope violation: user is scoped to 'EMEA' but requested data for 'APAC'."
+  },
+  {
+    "timestamp": "2026-08-22T12:10:17.661312+00:00",
+    "user_role": "regional_sales_manager",
+    "user_assigned_region": "EMEA",
+    "requested_region": "EMEA",
+    "requested_kpi": "regional_revenue",
+    "allowed": true,
+    "reason": "Access granted within role and region scope."
+  },
+  {
+    "timestamp": "2026-08-22T12:10:17.661636+00:00",
+    "user_role": "category_manager",
+    "user_assigned_region": null,
+    "requested_region": "APAC",
+    "requested_kpi": "win_rate",
+    "allowed": false,
+    "reason": "Role 'category_manager' is not in roles_allowed ['cfo', 'regional_sales_manager'] for KPI 'win_rate'."
+  }
+]
