@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quorum — Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2534; --ink-soft:#3D4759; --ink-mute:#6B7486;
+    --paper:#EEF0F4; --card:#FBFBFC; --card-edge:#D8DCE4;
+    --brass:#B8862E; --brass-dim:#DDC391; --brass-deep:#7A5A1E;
+    --confirm:#2F6B4F; --confirm-bg:#E3EFE8;
+    --reject:#A13D2B; --reject-bg:#F5E5E1;
+    --pending:#6B7486; --pending-bg:#E7E9ED;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--brass-deep);}
+
+  .topbar{
+    background:var(--ink);color:#F4F5F7;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+  .wordmark{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .wordmark .dot{width:8px;height:8px;border-radius:50%;background:var(--brass);}
+  .user-select-wrap{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#AEB4BF;}
+  select{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:#2A3547;color:#fff;
+    border:1px solid #3A4457;border-radius:6px;padding:6px 10px;cursor:pointer;
+  }
+
+  .navbar{
+    background:var(--card);border-bottom:1px solid var(--card-edge);
+    display:flex;gap:2px;padding:0 24px;overflow-x:auto;
+  }
+  .navtab{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;
+    cursor:pointer;color:var(--ink-mute);border-bottom:2.5px solid transparent;
+    white-space:nowrap;transition:color .15s,border-color .15s;
+  }
+  .navtab:hover{color:var(--ink);}
+  .navtab.active{color:var(--brass-deep);border-color:var(--brass);font-weight:500;}
+
+  .content{max-width:1000px;margin:0 auto;padding:28px 24px 60px;}
+
+  .page-head{margin-bottom:22px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.07em;color:var(--brass-deep);text-transform:uppercase;margin:0 0 5px;}
+  .page-title{font-size:22px;font-weight:600;}
+  .page-sub{color:var(--ink-mute);font-size:13.5px;margin-top:5px;max-width:640px;line-height:1.5;}
+
+  .denied-box{
+    background:var(--reject-bg);border:1px solid var(--reject);color:var(--reject);
+    border-radius:var(--radius);padding:16px 18px;font-size:13.5px;margin-top:20px;
+  }
+  .empty-box{
+    background:var(--card);border:1px dashed var(--card-edge);border-radius:var(--radius);
+    padding:30px 24px;text-align:center;color:var(--ink-mute);font-size:13.5px;margin-top:20px;
+  }
+
+  .tabs{display:flex;gap:2px;margin:22px 0 6px;border-bottom:1.5px solid var(--card-edge);flex-wrap:wrap;}
+  .tab{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:9px 16px;cursor:pointer;color:var(--ink-mute);border-bottom:2.5px solid transparent;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--brass-deep);border-color:var(--brass);font-weight:500;}
+
+  .case-meta{display:flex;justify-content:space-between;align-items:flex-end;margin:16px 0 24px;flex-wrap:wrap;gap:12px;}
+  .case-title{font-size:18px;font-weight:600;}
+  .case-sub{font-size:12.5px;color:var(--ink-mute);margin-top:4px;}
+  .stamp{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:5px 12px;border-radius:4px;text-transform:uppercase;border:1.5px solid currentColor;}
+  .stamp.confirmed{color:var(--confirm);background:var(--confirm-bg);}
+  .stamp.rejected{color:var(--reject);background:var(--reject-bg);}
+  .stamp.pending{color:var(--pending);background:var(--pending-bg);}
+
+  .witness-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:6px;}
+  @media (max-width:760px){ .witness-row{grid-template-columns:repeat(2,1fr);} }
+  .card{background:var(--card);border:1px solid var(--card-edge);border-radius:var(--radius);padding:15px 14px 13px;position:relative;min-height:170px;display:flex;flex-direction:column;}
+  .pin{width:9px;height:9px;border-radius:50%;background:var(--brass);position:absolute;top:-5px;left:50%;transform:translateX(-50%);}
+  .card-role{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--brass-deep);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+  .card-name{font-size:14px;font-weight:600;margin-bottom:7px;}
+  .card-body{font-size:12px;color:var(--ink-soft);line-height:1.5;flex:1;}
+  .card-body .num{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-weight:500;}
+  .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:9px;border-top:1px dashed var(--card-edge);}
+  .conf-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:3px 8px;border-radius:3px;text-transform:uppercase;}
+  .conf-high{color:var(--confirm);background:var(--confirm-bg);}
+  .conf-medium{color:var(--brass-deep);background:var(--brass-dim);}
+  .conf-low, .conf-no_analog{color:var(--reject);background:var(--reject-bg);}
+  .conf-na{color:var(--pending);background:var(--pending-bg);}
+
+  .verdict{background:var(--ink);color:#F4F5F7;border-radius:var(--radius);padding:20px 22px;margin-top:18px;}
+  .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-dim);text-transform:uppercase;letter-spacing:.06em;}
+  .verdict-title{font-size:16px;font-weight:600;margin-top:3px;}
+  .verdict-text{font-size:13px;line-height:1.65;color:#D3D6DC;margin-top:10px;}
+  .verdict-text .num{font-family:'IBM Plex Mono',monospace;color:#fff;font-weight:500;}
+  .attr-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:14px 0 8px;background:#2A3547;}
+  .attr-bar div{height:100%;}
+  .attr-legend{display:flex;gap:16px;font-size:11px;color:#AEB4BF;margin-bottom:4px;flex-wrap:wrap;}
+  .attr-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:9px;height:9px;border-radius:2px;}
+  .weights-strip{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .wchip{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#AEB4BF;background:#2A3547;padding:4px 9px;border-radius:4px;}
+  .wchip b{color:#fff;font-weight:600;}
+  .report-link{display:inline-block;margin-top:14px;font-size:12px;color:var(--brass-dim);cursor:pointer;text-decoration:underline;}
+
+  .dropzone{
+    border:2px dashed var(--card-edge);border-radius:var(--radius);background:var(--card);
+    padding:44px 24px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .dropzone.drag{border-color:var(--brass);background:#FAF6EC;}
+  .dropzone i{font-size:26px;color:var(--ink-mute);}
+  .dz-title{font-size:14.5px;font-weight:500;margin-top:10px;}
+  .dz-sub{font-size:12px;color:var(--ink-mute);margin-top:4px;}
+  .file-chip{
+    display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--card-edge);
+    border-radius:6px;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:14px;
+  }
+  .btn{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;
+    border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;margin-top:16px;
+  }
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.ghost{background:transparent;color:var(--ink);}
+
+  .steps{margin-top:24px;display:flex;flex-direction:column;gap:9px;}
+  .step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-mute);}
+  .step-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--card-edge);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;}
+  .step.done .step-dot{background:var(--confirm);border-color:var(--confirm);color:#fff;}
+  .step.done{color:var(--ink);}
+  .step.active .step-dot{border-color:var(--brass);}
+  .step.active{color:var(--ink);}
+  .disclosure{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-mute);background:var(--card);border:1px solid var(--card-edge);border-radius:6px;padding:10px 12px;margin-top:20px;}
+
+  .field-row{margin-bottom:16px;}
+  .field-label{font-size:12.5px;font-weight:500;margin-bottom:6px;display:block;}
+  select.form-input, textarea.form-input, input.form-input{
+    width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:9px 11px;
+    border:1px solid var(--card-edge);border-radius:6px;background:var(--card);color:var(--ink);
+  }
+  textarea.form-input{resize:vertical;min-height:70px;}
+  .toast{
+    background:var(--confirm-bg);border:1px solid var(--confirm);color:var(--confirm);
+    border-radius:6px;padding:10px 14px;font-size:12.5px;margin-top:14px;display:none;
+  }
+  .toast.show{display:block;}
+
+  table.log-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px;}
+  table.log-table th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--card-edge);}
+  table.log-table td{padding:8px 10px;border-bottom:1px solid var(--card-edge);}
+  .agree{color:var(--confirm);} .disagree{color:var(--reject);} .na-cell{color:var(--ink-mute);}
+
+  table.acc-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px;}
+  table.acc-table th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-mute);text-transform:uppercase;padding:9px 10px;border-bottom:1px solid var(--card-edge);}
+  table.acc-table td{padding:9px 10px;border-bottom:1px solid var(--card-edge);}
+  .section-title{font-size:15px;font-weight:600;margin:26px 0 4px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wordmark"><span class="dot"></span>QUORUM</div>
+  <div class="user-select-wrap">
+    Signed in as
+    <select id="userSelect"></select>
+  </div>
+</div>
+
+<div class="navbar" id="navbar"></div>
+<div class="content" id="content"></div>
+
+<script>
+const USERS = {
+  admin_priya: { name:"Priya (Admin)", role:"administrator", region:null },
+  cfo_maria: { name:"Maria (CFO)", role:"cfo", region:null },
+  sales_raj: { name:"Raj (Sales Mgr, APAC)", role:"regional_sales_manager", region:"APAC" },
+  sales_lena: { name:"Lena (Sales Mgr, EMEA)", role:"regional_sales_manager", region:"EMEA" },
+  sales_sam: { name:"Sam (Sales Mgr, NA)", role:"regional_sales_manager", region:"NA" },
+};
+
+const ROLES_ALLOWED = ["administrator","cfo","regional_sales_manager"];
+
+const STATIC_PRIORS = {statistician:0.90, chronicler:0.85, field:0.70, pattern:0.50};
+const PRIOR_STRENGTH = 5;
+
+const CASES = {
+  apac: {
+    label:"APAC", weeks:"Weeks 9–12", type:"revenue",
+    witnesses:[
+      { role:"Statistician", name:"Numbers", body:"Revenue down <span class=\"num\">$289,003</span> cumulative. Price effect <span class=\"num\">-14%</span> of change, volume/competitive effect <span class=\"num\">+111%</span> — price alone would have <em>added</em> revenue.", conf:"high" },
+      { role:"Chronicler", name:"Ops log", body:"Matched <span class=\"num\">OPS-101</span> price increase (6%, week 8) and <span class=\"num\">OPS-102</span> competitive intel — NimbusCo undercutting on 2 renewals (week 9).", conf:"high" },
+      { role:"Pattern", name:"History", body:"Best analog: APAC-South week 12 (<span class=\"num\">-8.6%</span> vs <span class=\"num\">-8.5%</span>, 0.1pp apart). Moderate confidence.", conf:"medium" },
+      { role:"Field", name:"Customer voice", body:"6 tickets. NimbusCo named in 2, quoting <span class=\"num\">15%</span> lower. Renewal hike cited as poorly communicated. Consistent signal.", conf:"high" },
+    ],
+    weeks_data:[
+      {week:9, price_effect_pct:-26.0, volume_effect_pct:120.7, dominant_driver:"volume", delta_revenue_usd:-83320, ops_corroborated:true, field_corroborated:true, pattern_confidence:"medium", overall_confidence:"high"},
+      {week:10, price_effect_pct:-13.6, volume_effect_pct:110.4, dominant_driver:"volume", delta_revenue_usd:-100724, ops_corroborated:true, field_corroborated:null, pattern_confidence:"medium", overall_confidence:"high"},
+      {week:11, price_effect_pct:-9.1, volume_effect_pct:107.6, dominant_driver:"volume", delta_revenue_usd:-69534, ops_corroborated:true, field_corroborated:null, pattern_confidence:"medium", overall_confidence:"high"},
+      {week:12, price_effect_pct:-0.0, volume_effect_pct:100.0, dominant_driver:"volume", delta_revenue_usd:-35425, ops_corroborated:true, field_corroborated:null, pattern_confidence:"medium", overall_confidence:"high"},
+    ],
+    dealCorroboration: {lost:10, total:12, competitor:5, price:8},
+    attribution:[ {label:"Volume / competitive", pct:79, color:"#B8862E"}, {label:"Price", pct:14, color:"#6B7486"}, {label:"Interaction / mix", pct:7, color:"#3D4759"} ],
+  },
+  apacsouth: {
+    label:"APAC-South", weeks:"Weeks 10, 12", type:"revenue",
+    witnesses:[
+      { role:"Statistician", name:"Numbers", body:"Revenue down <span class=\"num\">$13,320</span> combined. Volume effect <span class=\"num\">+98%</span> dominant, baseline from only 1 week of trailing history.", conf:"medium" },
+      { role:"Chronicler", name:"Ops log", body:"Matched <span class=\"num\">OPS-104</span> — new sub-region go-live, limited local sales headcount.", conf:"high" },
+      { role:"Pattern", name:"History", body:"Week 10: <span class=\"num\">no reliable analog</span> — only 1 trailing week of data. Declines to force a match.", conf:"no_analog" },
+      { role:"Field", name:"Customer voice", body:"No complaint-volume flag triggered for this region — no ticket investigation was run.", conf:"na" },
+    ],
+    weeks_data:[
+      {week:10, price_effect_pct:10.6, volume_effect_pct:91.4, dominant_driver:"volume", delta_revenue_usd:-9798, ops_corroborated:true, field_corroborated:null, pattern_confidence:"no_analog", overall_confidence:"medium"},
+      {week:12, price_effect_pct:-19.7, volume_effect_pct:117.7, dominant_driver:"volume", delta_revenue_usd:-3522, ops_corroborated:true, field_corroborated:null, pattern_confidence:"medium", overall_confidence:"high"},
+    ],
+    dealCorroboration: null,
+    attribution:[ {label:"Volume / competitive", pct:95, color:"#B8862E"}, {label:"Price", pct:3, color:"#6B7486"}, {label:"Interaction / mix", pct:2, color:"#3D4759"} ],
+  },
+  na: {
+    label:"NA", weeks:"Week 11", type:"complaint",
+    witnesses:[
+      { role:"Detection", name:"Keyword flag", body:"2 tickets matched the price/competitor keyword filter — flagged on vocabulary alone, zero baseline for comparison.", conf:"na" },
+      { role:"Chronicler", name:"Ops log", body:"Matched <span class=\"num\">OPS-105</span> — seasonal promo, 10% discount code, launched the same week. Context, not a threat.", conf:"medium" },
+      { role:"Field", name:"Customer voice", body:"Both tickets read <span class=\"num\">positive</span> — one praises the promo, one is a routine question. No competitor named.", conf:"low" },
+      { role:"Falsifier", name:"Cross-check", body:"Field's LOW-confidence, positive read directly contradicts the keyword flag. Verdict: <span class=\"num\">REJECTED</span>.", conf:"low" },
+    ],
+    falsifier_verdict:"REJECTED",
+  },
+  emea: {
+    label:"EMEA", weeks:"—", type:"empty",
+  },
+};
+
+const CASE_ORDER = ["apac","apacsouth","na","emea"];
+
+let activeUserKey = "admin_priya";
+let activeTab = "dashboard";
+let activeCase = "apac";
+let feedbackLog = [];
+let uploadedFileName = null;
+let uploadStepIndex = -1;
+
+function confScore(c){ return {high:1.0, medium:0.6, low:0.3, no_analog:0.1, unknown:0.3}[c] ?? 0.3; }
+
+function scoreAgreement(caseKey, verdict){
+  const c = CASES[caseKey];
+  const scores = {statistician:null, chronicler:null, pattern:null, field:null};
+  if (c.type === "revenue" && (verdict==="price"||verdict==="volume"||verdict==="insufficient_evidence")){
+    const statA=[], chronA=[], patA=[], fieldA=[];
+    c.weeks_data.forEach(w=>{
+      if (verdict==="price"||verdict==="volume"){
+        statA.push(w.dominant_driver===verdict);
+        chronA.push(!!w.ops_corroborated);
+        patA.push(w.pattern_confidence==="high"||w.pattern_confidence==="medium");
+        if (w.field_corroborated!==null) fieldA.push(w.field_corroborated===true);
+      } else {
+        statA.push(w.overall_confidence==="low");
+        chronA.push(!w.ops_corroborated);
+        patA.push(w.pattern_confidence==="low"||w.pattern_confidence==="no_analog");
+        if (w.field_corroborated!==null) fieldA.push(w.field_corroborated===false);
+      }
+    });
+    const majority = arr => arr.length ? (arr.filter(Boolean).length/arr.length)>=0.5 : null;
+    scores.statistician = majority(statA);
+    scores.chronicler = majority(chronA);
+    scores.pattern = majority(patA);
+    scores.field = fieldA.length ? majority(fieldA) : null;
+  } else if (c.type === "complaint"){
+    if (verdict==="false_positive") scores.field = c.falsifier_verdict==="REJECTED";
+    if (verdict==="confirmed_signal") scores.field = c.falsifier_verdict==="CONFIRMED";
+  }
+  return scores;
+}
+
+function recomputeWeights(){
+  const weights = {}, counts = {};
+  Object.entries(STATIC_PRIORS).forEach(([agent,prior])=>{
+    const judgments = feedbackLog.map(e=>e.scores[agent]).filter(v=>v!==null && v!==undefined);
+    const n = judgments.length;
+    const rate = n ? judgments.filter(Boolean).length/n : prior;
+    weights[agent] = (prior*PRIOR_STRENGTH + rate*n)/(PRIOR_STRENGTH+n);
+    counts[agent] = n;
+  });
+  return {weights, counts};
+}
+
+function episodeScore(weeksData, weights){
+  const scores=[];
+  weeksData.forEach(w=>{
+    scores.push(weights.statistician*confScore(w.overall_confidence));
+    if (w.ops_corroborated) scores.push(weights.chronicler*1.0);
+    if (w.field_corroborated===true) scores.push(weights.field*1.0);
+    else if (w.field_corroborated===false) scores.push(weights.field*0.2);
+    scores.push(weights.pattern*confScore(w.pattern_confidence));
+  });
+  const mean = scores.reduce((a,b)=>a+b,0)/scores.length;
+  const tier = mean>=0.7 ? "HIGH" : mean>=0.45 ? "MEDIUM" : "LOW";
+  return {score:mean, tier};
+}
+
+function canAccessCase(user, caseKey){
+  if (!ROLES_ALLOWED.includes(user.role)) return false;
+  if (user.region === null) return true;
+  return CASES[caseKey].label === user.region;
+}
+
+function accessibleCases(user){
+  return CASE_ORDER.filter(k => canAccessCase(user, k));
+}
+
+function renderUserSelect(){
+  const sel = document.getElementById('userSelect');
+  sel.innerHTML = Object.entries(USERS).map(([k,u]) => `<option value="${k}" ${k===activeUserKey?'selected':''}>${u.name}</option>`).join('');
+  sel.onchange = () => { activeUserKey = sel.value; const acc = accessibleCases(USERS[activeUserKey]); if(!acc.includes(activeCase)) activeCase = acc[0] || null; renderAll(); };
+}
+
+function renderNav(){
+  const user = USERS[activeUserKey];
+  const tabs = [
+    {key:"dashboard", label:"Dashboard"},
+    {key:"upload", label:"Upload data"},
+    {key:"reports", label:"Reports & feedback"},
+  ];
+  if (user.role === "administrator") tabs.push({key:"account", label:"Account"});
+  const el = document.getElementById('navbar');
+  el.innerHTML = tabs.map(t => `<div class="navtab ${t.key===activeTab?'active':''}" data-tab="${t.key}">${t.label}</div>`).join('');
+  el.querySelectorAll('.navtab').forEach(t => t.addEventListener('click', () => { activeTab = t.dataset.tab; renderAll(); }));
+}
+
+function renderAll(){
+  renderUserSelect();
+  renderNav();
+  if (activeTab === "dashboard") renderDashboard();
+  else if (activeTab === "upload") renderUpload();
+  else if (activeTab === "reports") renderReports();
+  else if (activeTab === "account") renderAccount();
+}
+
+function confLabel(c){ return {high:"High", medium:"Medium", low:"Low", no_analog:"No analog", na:"N/A"}[c] || c; }
+
+function renderDashboard(){
+  const user = USERS[activeUserKey];
+  const acc = accessibleCases(user);
+  const content = document.getElementById('content');
+
+  if (acc.length === 0){
+    content.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">Dashboard</p>
+        <h1 class="page-title">No accessible cases</h1>
+      </div>
+      <div class="denied-box">Your role/region scope does not currently match any case in this dataset.</div>`;
+    return;
+  }
+  if (!acc.includes(activeCase)) activeCase = acc[0];
+
+  const tabsHtml = acc.map(k => `<div class="tab ${k===activeCase?'active':''}" data-case="${k}">${CASES[k].label}${CASES[k].weeks && CASES[k].weeks!=='—' ? ' · '+CASES[k].weeks : ''}</div>`).join('');
+
+  let body = "";
+  const c = CASES[activeCase];
+
+  if (c.type === "empty"){
+    body = `
+      <div class="case-meta">
+        <div><div class="case-title">${c.label} — no material movements</div><div class="case-sub">Detection layer found nothing worth escalating this period</div></div>
+        <span class="stamp confirmed">No issues</span>
+      </div>
+      <div class="empty-box">No KPI in ${c.label} crossed its materiality threshold this period. A ticket-volume spike was observed but traced to a resolved billing-portal outage, not a pricing or competitive signal — correctly excluded by the detection layer rather than escalated.</div>`;
+  } else if (c.type === "complaint"){
+    const witnessCards = c.witnesses.map(w => `
+      <div class="card"><div class="pin"></div>
+        <div class="card-role">${w.role}</div><div class="card-name">${w.name}</div>
+        <div class="card-body">${w.body}</div>
+        <div class="card-foot"><span class="conf-badge conf-${w.conf}">${confLabel(w.conf)}</span></div>
+      </div>`).join('');
+    body = `
+      <div class="case-meta">
+        <div><div class="case-title">NA complaint-volume alert</div><div class="case-sub">${c.witnesses.length} independent findings, cross-checked before verdict</div></div>
+        <span class="stamp rejected">Rejected — false positive</span>
+      </div>
+      <div class="witness-row">${witnessCards}</div>
+      <div class="verdict">
+        <div class="verdict-label">Falsifier verdict</div>
+        <div class="verdict-title">NA complaint-volume alert</div>
+        <div class="verdict-text">complaint_volume flag triggered on keyword match alone, but Field's actual reading of the ticket text came back positive, not negative. This is a false positive of the keyword-based detector — no action needed.</div>
+        <div class="report-link" data-report-case="na">Report an issue with this finding →</div>
+      </div>`;
+  } else {
+    const { weights } = recomputeWeights();
+    const { score, tier } = episodeScore(c.weeks_data, weights);
+    const cumDelta = c.weeks_data.reduce((s,w)=>s+w.delta_revenue_usd,0);
+    const witnessCards = c.witnesses.map(w => `
+      <div class="card"><div class="pin"></div>
+        <div class="card-role">${w.role}</div><div class="card-name">${w.name}</div>
+        <div class="card-body">${w.body}</div>
+        <div class="card-foot"><span class="conf-badge conf-${w.conf}">${confLabel(w.conf)}</span></div>
+      </div>`).join('');
+    const bar = c.attribution.map(a => `<div style="width:${a.pct}%;background:${a.color}"></div>`).join('');
+    const legend = c.attribution.map(a => `<span><span class="swatch" style="background:${a.color}"></span>${a.label} · ${a.pct}%</span>`).join('');
+    const dc = c.dealCorroboration;
+    const dcText = dc ? ` Deal check: <span class="num">${dc.lost}/${dc.total}</span> lost deals, <span class="num">${dc.competitor}</span> cite the competitor, <span class="num">${dc.price}</span> cite price.` : "";
+    const rec = tier==="HIGH"
+      ? `Review win/loss reasons on the competitor-cited lost deals to quantify displaced revenue precisely.`
+      : `Confidence not yet high enough for a firm attribution — continue monitoring next 2–4 weeks.`;
+    const weightsChips = Object.entries(weights).map(([k,v]) => `<div class="wchip">${k} <b>${v.toFixed(2)}</b></div>`).join('');
+    const stampClass = tier==="HIGH" ? "confirmed" : "pending";
+
+    body = `
+      <div class="case-meta">
+        <div><div class="case-title">${c.label} revenue episode</div><div class="case-sub">${c.witnesses.length} independent findings, cross-checked before verdict</div></div>
+        <span class="stamp ${stampClass}">${tier} confidence</span>
+      </div>
+      <div class="witness-row">${witnessCards}</div>
+      <div class="verdict">
+        <div class="verdict-label">Falsifier + Arbiter verdict</div>
+        <div class="verdict-title">${c.label} revenue episode</div>
+        <div class="verdict-text">Revenue down <span class="num">$${Math.abs(cumDelta).toLocaleString(undefined,{maximumFractionDigits:0})}</span> across ${c.weeks}.${dcText}</div>
+        <div class="attr-bar">${bar}</div>
+        <div class="attr-legend">${legend}</div>
+        <div class="verdict-text"><b style="color:#fff;">Recommendation:</b> ${rec}</div>
+        <div class="verdict-text mono" style="font-size:11px;">Episode score: ${score.toFixed(2)} · based on ${feedbackLog.length ? feedbackLog.length+' recorded feedback event(s)' : 'static prior weights, no feedback yet'}</div>
+        <div class="weights-strip">${weightsChips}</div>
+        <div class="report-link" data-report-case="${activeCase}">Report an issue with this finding →</div>
+      </div>`;
+  }
+
+  content.innerHTML = `
+    <div class="page-head">
+      <p class="eyebrow">Dashboard</p>
+      <h1 class="page-title">Four specialists testify blind. Then they argue in the open.</h1>
+      <p class="page-sub">Viewing as <b>${user.name}</b>${user.region ? ` — scoped to ${user.region}` : ' — global access'}.</p>
+    </div>
+    <div class="tabs">${tabsHtml}</div>
+    ${body}
+  `;
+  content.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { activeCase = t.dataset.case; renderDashboard(); }));
+  const rl = content.querySelector('[data-report-case]');
+  if (rl) rl.addEventListener('click', () => { activeTab="reports"; window._prefillCase = rl.dataset.reportCase; renderAll(); });
+}
+
+const PIPELINE_STEPS = [
+  "Detecting material movements (rule-based, non-LLM)",
+  "Statistician — price/volume decomposition",
+  "Chronicler — cross-checking ops log",
+  "Pattern — searching historical analogs",
+  "Field — summarizing customer tickets (LLM call)",
+  "Falsifier — cross-checking all four agents",
+  "Arbiter — synthesizing final verdict",
+];
+
+function renderUpload(){
+  const content = document.getElementById('content');
+  const running = uploadStepIndex >= 0 && uploadStepIndex < PIPELINE_STEPS.length;
+  const done = uploadStepIndex >= PIPELINE_STEPS.length;
+
+  content.innerHTML = `
+    <div class="page-head">
+      <p class="eyebrow">Upload data</p>
+      <h1 class="page-title">Run a new investigation</h1>
+      <p class="page-sub">Drop in a KPI source file (CSV/XLSX) to run it through the full Quorum pipeline.</p>
+    </div>
+
+    <div class="dropzone" id="dz">
+      <div class="dz-title">${uploadedFileName ? uploadedFileName : "Drop a file here, or click to browse"}</div>
+      <div class="dz-sub">CSV, XLSX — e.g. weekly sales export, Superstore-format data</div>
+      <input type="file" id="fileInput" style="display:none;">
+    </div>
+    ${uploadedFileName ? `<div class="file-chip">${uploadedFileName}<span style="cursor:pointer;color:var(--reject);" id="clearFile">✕</span></div>` : ""}
+
+    <div>
+      <button class="btn" id="runBtn" ${!uploadedFileName || running ? "disabled":""}>${done ? "Run again" : "Run analysis"}</button>
+    </div>
+
+    ${uploadStepIndex >= 0 ? `<div class="steps">${PIPELINE_STEPS.map((s,i) => `
+      <div class="step ${i<uploadStepIndex?'done':i===uploadStepIndex?'active':''}">
+        <div class="step-dot">${i<uploadStepIndex ? '✓' : ''}</div>${s}
+      </div>`).join('')}</div>` : ""}
+
+    ${done ? `<div class="toast show" style="margin-top:20px;">Analysis complete — findings updated. <span style="cursor:pointer;text-decoration:underline;" id="viewResults">View results in Dashboard →</span></div>` : ""}
+
+    <div class="disclosure">Demo note: this simulates the pipeline's step sequence and timing on real hardware. Dashboard results reflect the actual verified output of this project's live pipeline run, not a live re-computation in-browser.</div>
+  `;
+
+  const dz = document.getElementById('dz');
+  const fileInput = document.getElementById('fileInput');
+  dz.addEventListener('click', () => fileInput.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag');
+    if (e.dataTransfer.files.length) { uploadedFileName = e.dataTransfer.files[0].name; uploadStepIndex = -1; renderUpload(); }
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) { uploadedFileName = fileInput.files[0].name; uploadStepIndex = -1; renderUpload(); }
+  });
+  const clearBtn = document.getElementById('clearFile');
+  if (clearBtn) clearBtn.addEventListener('click', (e) => { e.stopPropagation(); uploadedFileName=null; uploadStepIndex=-1; renderUpload(); });
+
+  const runBtn = document.getElementById('runBtn');
+  if (runBtn) runBtn.addEventListener('click', () => { uploadStepIndex = 0; runUploadSteps(); });
+
+  const viewBtn = document.getElementById('viewResults');
+  if (viewBtn) viewBtn.addEventListener('click', () => { activeTab="dashboard"; renderAll(); });
+}
+
+function runUploadSteps(){
+  renderUpload();
+  if (uploadStepIndex < PIPELINE_STEPS.length){
+    setTimeout(() => { uploadStepIndex++; runUploadSteps(); }, 480);
+  }
+}
+
+function verdictOptionsFor(caseKey){
+  if (!caseKey) return [];
+  const c = CASES[caseKey];
+  if (c.type === "revenue") return [["price","Price was the dominant cause"],["volume","Volume/competitive pressure was dominant"],["insufficient_evidence","Insufficient evidence either way"]];
+  if (c.type === "complaint") return [["false_positive","Confirmed: this was a false positive"],["confirmed_signal","Confirmed: this was a real signal"]];
+  return [];
+}
+
+function renderReports(){
+  const user = USERS[activeUserKey];
+  const acc = accessibleCases(user).filter(k => CASES[k].type !== "empty");
+  const content = document.getElementById('content');
+  const prefill = window._prefillCase && acc.includes(window._prefillCase) ? window._prefillCase : (acc[0] || "");
+  window._prefillCase = null;
+
+  const caseOptions = acc.map(k => `<option value="${k}" ${k===prefill?'selected':''}>${CASES[k].label}</option>`).join('');
+
+  const logRows = feedbackLog.map(e => `
+    <tr>
+      <td>${CASES[e.case].label}</td><td class="mono">${e.verdict}</td><td>${e.analyst}</td>
+      ${["statistician","chronicler","pattern","field"].map(a => {
+        const v = e.scores[a];
+        return `<td class="${v===true?'agree':v===false?'disagree':'na-cell'}">${v===true?'Agreed':v===false?'Disagreed':'—'}</td>`;
+      }).join('')}
+    </tr>`).join('');
+
+  content.innerHTML = `
+    <div class="page-head">
+      <p class="eyebrow">Reports &amp; feedback</p>
+      <h1 class="page-title">Flag wrong data, or confirm a verdict</h1>
+      <p class="page-sub">Feedback here scores each specialist's original signal against your final call and updates their trust weight — the same mechanism used across every case, live.</p>
+    </div>
+
+    <div class="field-row">
+      <label class="field-label">Case</label>
+      <select class="form-input" id="fbCase">${caseOptions}</select>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Your assessment</label>
+      <select class="form-input" id="fbVerdict"></select>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Your name</label>
+      <input class="form-input" id="fbAnalyst" value="${user.name.split(' (')[0]}">
+    </div>
+    <div class="field-row">
+      <label class="field-label">Notes</label>
+      <textarea class="form-input" id="fbNotes" placeholder="e.g. Confirmed via win-loss review, NimbusCo cited on 5 deals"></textarea>
+    </div>
+    <button class="btn" id="fbSubmit">Submit feedback</button>
+    <div class="toast" id="fbToast">Feedback recorded — agent weights updated below.</div>
+
+    <div class="section-title">Feedback history</div>
+    ${feedbackLog.length ? `<table class="log-table">
+      <tr><th>Case</th><th>Verdict</th><th>Analyst</th><th>Statistician</th><th>Chronicler</th><th>Pattern</th><th>Field</th></tr>
+      ${logRows}
+    </table>` : `<div class="empty-box">No feedback recorded yet.</div>`}
+  `;
+
+  const caseSel = document.getElementById('fbCase');
+  const verdictSel = document.getElementById('fbVerdict');
+  function refreshVerdicts(){
+    verdictSel.innerHTML = verdictOptionsFor(caseSel.value).map(([v,l]) => `<option value="${v}">${l}</option>`).join('');
+  }
+  caseSel.addEventListener('change', refreshVerdicts);
+  refreshVerdicts();
+
+  document.getElementById('fbSubmit').addEventListener('click', () => {
+    const caseKey = caseSel.value, verdict = verdictSel.value;
+    const analyst = document.getElementById('fbAnalyst').value || "unknown";
+    const notes = document.getElementById('fbNotes').value;
+    const scores = scoreAgreement(caseKey, verdict);
+    feedbackLog.push({case:caseKey, verdict, analyst, notes, scores});
+    const toast = document.getElementById('fbToast');
+    toast.classList.add('show');
+    renderReports();
+  });
+}
+
+function renderAccount(){
+  const content = document.getElementById('content');
+  const { weights, counts } = recomputeWeights();
+  const userRows = Object.entries(USERS).map(([k,u]) => `
+    <tr><td>${u.name}</td><td class="mono">${u.role}</td><td>${u.region || 'Global'}</td>
+    <td><select class="form-input" style="padding:4px 8px;font-size:12px;" data-user="${k}">
+      <option value="regional_sales_manager" ${u.role==='regional_sales_manager'?'selected':''}>regional_sales_manager</option>
+      <option value="cfo" ${u.role==='cfo'?'selected':''}>cfo</option>
+      <option value="administrator" ${u.role==='administrator'?'selected':''}>administrator</option>
+    </select></td></tr>`).join('');
+
+  const kpiRows = [
+    ["regional_revenue","region","cfo, regional_sales_manager, sales_ops_analyst"],
+    ["avg_selling_price","region","cfo, regional_sales_manager, pricing_team"],
+    ["win_rate","region","cfo, regional_sales_manager"],
+    ["complaint_volume","region","cfo, regional_sales_manager, customer_success_lead"],
+    ["marketing_spend","region","cfo, regional_sales_manager, marketing_ops"],
+  ].map(([kpi,scope,roles]) => `<tr><td class="mono">${kpi}</td><td>${scope}</td><td style="font-size:12px;">${roles}</td></tr>`).join('');
+
+  content.innerHTML = `
+    <div class="page-head">
+      <p class="eyebrow">Account — administrator</p>
+      <h1 class="page-title">Users, access, and governance</h1>
+      <p class="page-sub">Full visibility across every region and KPI. Role changes below are local to this demo session.</p>
+    </div>
+
+    <div class="section-title">Users</div>
+    <table class="acc-table"><tr><th>Name</th><th>Role</th><th>Region scope</th><th>Change role</th></tr>${userRows}</table>
+
+    <div class="section-title">KPI governance (row/role-level access)</div>
+    <table class="acc-table"><tr><th>KPI</th><th>Row-level scope</th><th>Roles allowed</th></tr>${kpiRows}</table>
+
+    <div class="section-title">Current agent trust weights</div>
+    <div class="weights-strip" style="margin-top:6px;">
+      ${Object.entries(weights).map(([k,v]) => `<div class="wchip" style="background:var(--card);color:var(--ink-mute);border:1px solid var(--card-edge);">${k} <b style="color:var(--ink);">${v.toFixed(3)}</b> <span style="color:var(--ink-mute);">(${counts[k]} sample${counts[k]!==1?'s':''})</span></div>`).join('')}
+    </div>
+  `;
+}
+
+renderAll();
+</script>
+</body>
+</html>
