@@ -48,15 +48,3 @@ python ..\pipeline\feedback.py --datadir . --region APAC --weeks 9,10,11,12 --ve
 
 Then open `quorum\web\quorum_case_file.html` directly in a browser to see
 the dashboard.
-
-## What changed from the old flat folder
-
-Nothing about how any script *works* changed -- every script already took
-`--datadir`/`--outdir` as an argument, so this reorganization only required
-one real code change: `generate_data.py` didn't have an `--outdir` flag
-before (it just wrote to whatever folder you ran it from), so that was
-added for consistency with every other script.
-
-This structure was verified end-to-end after the move -- every script listed
-above was re-run from scratch in the new layout and produces identical
-results to before.
